@@ -2,23 +2,20 @@
  * ╔══════════════════════════════════════════════╗
  * ║              🎙️ TEXT VOICE BOT              ║
  * ║        💠 HRIDOY HASAN SHANTO 💠            ║
- * ║          ONE-OF RANDOM VOICE SYSTEM         ║
- * ║              Loader Compatible              ║
+ * ║       MIRAI + GOATBOT COMPATIBLE             ║
+ * ║          RANDOM ONE-OF VOICE SYSTEM          ║
  * ╚══════════════════════════════════════════════╝
  */
 
 const axios = require("axios");
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 
 // ═══════════════════════════════════════════════
 // 🎙️ TEXT / EMOJI → VOICE MAP
-// 🎲 Multiple URLs = Random One-of System
 // ═══════════════════════════════════════════════
 
 const textAudioMap = {
-
-  // ───────────── TEXT VOICES ─────────────
 
   "🎵": [
     "https://files.catbox.moe/l0jhdq.mp3"
@@ -117,8 +114,6 @@ const textAudioMap = {
     "https://files.catbox.moe/fdqh2m.mp3"
   ],
 
-  // ───────────── NEW TEXT VOICES ─────────────
-
   "🫵😡": [
     "https://files.catbox.moe/yuonxq.mp3"
   ],
@@ -136,7 +131,7 @@ const textAudioMap = {
   ],
 
   // ═══════════════════════════════════════════
-  // 😄 EMOJI ONE-OF VOICES
+  // 😄 EMOJI
   // ═══════════════════════════════════════════
 
   "🥱": [
@@ -318,33 +313,7 @@ const textAudioMap = {
   "🙄": [
     "https://files.catbox.moe/vgzkeu.mp3"
   ]
-
 };
-
-// ═══════════════════════════════════════════════
-// 🎲 ONE-OF RANDOM VOICE SELECTOR
-// ═══════════════════════════════════════════════
-
-function getRandomVoice(key) {
-
-  const voices = textAudioMap[key];
-
-  if (!voices) return null;
-
-  if (!Array.isArray(voices)) {
-    return voices;
-  }
-
-  if (voices.length === 0) {
-    return null;
-  }
-
-  const randomIndex = Math.floor(
-    Math.random() * voices.length
-  );
-
-  return voices[randomIndex];
-}
 
 // ═══════════════════════════════════════════════
 // 🛡️ DUPLICATE PROTECTION
@@ -352,39 +321,50 @@ function getRandomVoice(key) {
 
 const processedMessages = new Set();
 
-function alreadyProcessed(messageID) {
+function alreadyProcessed(id) {
 
-  if (!messageID) {
-    return false;
-  }
+  if (!id) return false;
 
-  if (processedMessages.has(messageID)) {
+  if (processedMessages.has(id)) {
     return true;
   }
 
-  processedMessages.add(messageID);
+  processedMessages.add(id);
 
   setTimeout(() => {
-    processedMessages.delete(messageID);
+    processedMessages.delete(id);
   }, 30000);
 
   return false;
 }
 
 // ═══════════════════════════════════════════════
-// 📋 VOICE LIST
+// 🎲 RANDOM VOICE
+// ═══════════════════════════════════════════════
+
+function getRandomVoice(key) {
+
+  const list = textAudioMap[key];
+
+  if (!Array.isArray(list) || list.length === 0) {
+    return null;
+  }
+
+  return list[
+    Math.floor(Math.random() * list.length)
+  ];
+}
+
+// ═══════════════════════════════════════════════
+// 📋 LIST
 // ═══════════════════════════════════════════════
 
 const voiceList = `
-╔═══『 🎙️ 𝐓𝐄𝐗𝐓 𝐕𝐎𝐈𝐂𝐄 』═══╗
-      🩸 𝐀𝐔𝐓𝐎 𝐕𝐎𝐈𝐂𝐄 𝐋𝐈𝐒𝐓 🩸
-╚════════════════════════════╝
+╔═══『 🎙️ TEXT VOICE 』═══╗
+      🩸 AUTO VOICE LIST
+╚════════════════════════╝
 
-📢 @everyone
-
-╭─━━━━━━━━━━━━━━━━━━─╮
-│ 🎙️ 𝐕𝐎𝐈𝐂𝐄 𝐓𝐑𝐈𝐆𝐆𝐄𝐑𝐒 │
-╰─━━━━━━━━━━━━━━━━━━─╯
+🎙️ TEXT TRIGGERS
 
 🎵 গান
 😴 ঘুমা
@@ -420,30 +400,33 @@ const voiceList = `
 🎙️ dirim
 🔊 চুদি
 
-╭─━━━━━━━━━━━━━━━━━━─╮
-│ 😄 𝐄𝐌𝐎𝐉𝐈 𝐕𝐎𝐈𝐂𝐄 │
-╰─━━━━━━━━━━━━━━━━━━─╯
+━━━━━━━━━━━━━━━━━━━━━━
 
-🥱  😁  😌  🥺
-🤭  😅  😏  😞
-🤫  🍼  🤔  🥰
-🤦  😘  😑  😢
-🙊  🤨  😡  🤬
-🙈  😍  😭  😱
-😻  😿  💔  🤣
-🥹  🫣  🐸  💋
-🫦  😴  😼  🖕
-🥵  🙂  😒  😓
-🤧  🙄
+😄 EMOJI VOICE
+
+🥱 😁 😌 🥺
+🤭 😅 😏 😞
+🤫 🍼 🤔 🥰
+🤦 😘 😑 😢
+🙊 🤨 😡 🤬
+🙈 😍 😭 😱
+😻 😿 💔 🤣
+🥹 🫣 🐸 💋
+🫦 😴 😼 🖕
+🥵 🙂 😒 😓
+🤧 🙄
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
-🎲 Multiple voice থাকলে
-প্রতিবার Random One-of Voice
+🎲 Multiple URL থাকলে
+প্রতিবার Random Voice
 
-💠 𝐁𝐎𝐓 : 𝐓𝐄𝐗𝐓 𝐕𝐎𝐈𝐂𝐄
-👑 𝐀𝐃𝐌𝐈𝐍 : 𝐇𝐑𝐈𝐃𝐎𝐘 𝐇𝐀𝐒𝐀𝐍 𝐒𝐇𝐀𝐍𝐓𝐎
-🎙️ 𝐒𝐘𝐒𝐓𝐄𝐌 : 𝐀𝐔𝐓𝐎 𝐕𝐎𝐈𝐂𝐄
+🛡️ Same Message ID
+শুধু একবার Process হবে
+
+💠 BOT : TEXT VOICE
+👑 ADMIN : HRIDOY HASAN SHANTO
+🎙️ SYSTEM : AUTO VOICE
 
 ━━━━━━━━━━━━━━━━━━━━━━
 `;
@@ -456,28 +439,41 @@ module.exports.config = {
 
   name: "text_voice",
 
-  version: "3.0.0",
+  version: "4.0.0",
 
   hasPermssion: 0,
 
-  credits:
-    "💠 𝐇𝐑𝐈𝐃𝐎𝐘 𝐇𝐀𝐒𝐀𝐍 𝐒𝐇𝐀𝐍𝐓𝐎 💠",
+  role: 0,
+
+  credits: "💠 HRIDOY HASAN SHANTO 💠",
+
+  author: "HRIDOY HASAN SHANTO",
 
   description:
-    "Text ও Emoji দিলে নির্দিষ্ট voice/audio play করবে",
+    "Text এবং Emoji দিলে নির্দিষ্ট voice play করবে",
+
+  shortDescription:
+    "Text / Emoji Auto Voice",
+
+  longDescription:
+    "Text ও Emoji trigger অনুযায়ী random voice পাঠায়",
 
   commandCategory: "noprefix",
 
+  category: "noprefix",
+
   usages: "Text / Emoji",
 
-  cooldowns: 2
+  cooldowns: 2,
+
+  countDown: 2
 };
 
 // ═══════════════════════════════════════════════
-// 🎙️ HANDLE EVENT
+// 🎙️ CORE HANDLER
 // ═══════════════════════════════════════════════
 
-module.exports.handleEvent = async ({ api, event }) => {
+async function processVoice(api, event) {
 
   let filePath = null;
 
@@ -493,7 +489,7 @@ module.exports.handleEvent = async ({ api, event }) => {
       return;
     }
 
-    // 🛡️ Prevent duplicate processing
+    // 🛡️ SAME MESSAGE ID = ONLY ONE TIME
     if (alreadyProcessed(messageID)) {
       return;
     }
@@ -528,7 +524,7 @@ module.exports.handleEvent = async ({ api, event }) => {
     }
 
     // ═══════════════════════════════════════════
-    // 🎲 RANDOM ONE-OF VOICE
+    // 🎲 SELECT RANDOM URL
     // ═══════════════════════════════════════════
 
     const audioUrl = getRandomVoice(key);
@@ -538,7 +534,7 @@ module.exports.handleEvent = async ({ api, event }) => {
     }
 
     // ═══════════════════════════════════════════
-    // 📁 CACHE DIRECTORY
+    // 📁 CACHE
     // ═══════════════════════════════════════════
 
     const cacheDir = path.join(
@@ -546,30 +542,20 @@ module.exports.handleEvent = async ({ api, event }) => {
       "cache"
     );
 
-    if (!fs.existsSync(cacheDir)) {
-
-      fs.mkdirSync(cacheDir, {
-        recursive: true
-      });
-
-    }
-
-    // ═══════════════════════════════════════════
-    // 📄 UNIQUE FILE NAME
-    // ═══════════════════════════════════════════
+    await fs.ensureDir(cacheDir);
 
     const safeKey = encodeURIComponent(key);
 
-    const safeMessageID =
-      String(messageID || Date.now())
-        .replace(
-          /[^a-zA-Z0-9_-]/g,
-          ""
-        );
+    const safeMessageID = String(
+      messageID || Date.now()
+    ).replace(
+      /[^a-zA-Z0-9_-]/g,
+      ""
+    );
 
     filePath = path.join(
       cacheDir,
-      `${safeKey}_${safeMessageID}.audio`
+      `${safeKey}_${safeMessageID}.mp3`
     );
 
     // ═══════════════════════════════════════════
@@ -595,113 +581,77 @@ module.exports.handleEvent = async ({ api, event }) => {
 
     response.data.pipe(writer);
 
-    await new Promise(
-      (resolve, reject) => {
+    await new Promise((resolve, reject) => {
 
-        writer.on(
-          "finish",
-          resolve
-        );
+      writer.on("finish", resolve);
 
-        writer.on(
-          "error",
-          reject
-        );
+      writer.on("error", reject);
 
-        response.data.on(
-          "error",
-          reject
-        );
+      response.data.on("error", reject);
 
-      }
-    );
+    });
 
     // ═══════════════════════════════════════════
-    // 🎙️ SEND ONLY ONCE
+    // 🎙️ SEND ONCE
     // ═══════════════════════════════════════════
 
-    await new Promise(
-      (resolve, reject) => {
+    await new Promise((resolve, reject) => {
 
-        let callbackCalled = false;
+      let finished = false;
 
-        api.sendMessage(
+      const done = (err) => {
 
-          {
-            attachment:
-              fs.createReadStream(
-                filePath
-              )
-          },
+        if (finished) return;
 
-          threadID,
+        finished = true;
 
-          (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      };
 
-            if (callbackCalled) {
-              return;
-            }
+      api.sendMessage(
+        {
+          attachment:
+            fs.createReadStream(filePath)
+        },
+        threadID,
+        done,
+        messageID
+      );
 
-            callbackCalled = true;
-
-            if (err) {
-              reject(err);
-              return;
-            }
-
-            resolve();
-
-          },
-
-          messageID
-
-        );
-
-      }
-    );
+    });
 
     // ═══════════════════════════════════════════
-    // 🗑️ CACHE CLEANUP
+    // 🗑️ CLEAN CACHE
     // ═══════════════════════════════════════════
 
     setTimeout(() => {
 
-      if (!filePath) {
-        return;
+      if (
+        filePath &&
+        fs.existsSync(filePath)
+      ) {
+
+        fs.unlink(
+          filePath,
+          () => {}
+        );
+
       }
 
-      fs.unlink(
-        filePath,
-        (err) => {
-
-          if (
-            err &&
-            err.code !== "ENOENT"
-          ) {
-
-            console.error(
-              "[TEXT_VOICE] Cache delete error:",
-              err.message
-            );
-
-          }
-
-        }
-      );
-
-    }, 1000);
+    }, 1500);
 
   } catch (error) {
 
     console.error(
-      "[TEXT_VOICE] Error:",
+      "[TEXT_VOICE]",
       error.message
     );
 
-    // ═══════════════════════════════════════════
-    // 🗑️ ERROR CLEANUP
-    // ═══════════════════════════════════════════
-
+    // Cleanup
     try {
 
       if (
@@ -718,29 +668,81 @@ module.exports.handleEvent = async ({ api, event }) => {
 
     } catch (_) {}
 
-    // ═══════════════════════════════════════════
-    // ❌ ERROR MESSAGE
-    // ═══════════════════════════════════════════
-
-    try {
-
-      if (
-        event &&
-        event.threadID
-      ) {
-
-        await api.sendMessage(
-          "❌ ভয়েস প্লে করা যায়নি 😅",
-          event.threadID,
-          event.messageID
-        );
-
-      }
-
-    } catch (_) {}
-
   }
+}
+
+// ═══════════════════════════════════════════════
+// 🐐 GOATBOT FORMAT
+// ═══════════════════════════════════════════════
+
+module.exports.onStart = async function ({
+  api,
+  event
+}) {
+
+  return processVoice(
+    api,
+    event
+  );
 
 };
 
-এখন একটাই "text_voice.js" ফাইলে সবগুলো থাকবে। Multiple URL থাকা trigger-গুলোতে প্রতিবার random একটি voice নির্বাচন হবে এবং একই message ID দ্বিতীয়বার process হবে না।
+// ═══════════════════════════════════════════════
+// 🐐 GOATBOT EVENT FORMAT
+// ═══════════════════════════════════════════════
+
+module.exports.onChat = async function ({
+  api,
+  event
+}) {
+
+  return processVoice(
+    api,
+    event
+  );
+
+};
+
+// ═══════════════════════════════════════════════
+// 🐐 LEGACY EVENT SUPPORT
+// ═══════════════════════════════════════════════
+
+module.exports.handleEvent = async function ({
+  api,
+  event
+}) {
+
+  return processVoice(
+    api,
+    event
+  );
+
+};
+
+// ═══════════════════════════════════════════════
+// 🤖 MIRAI FORMAT
+// ═══════════════════════════════════════════════
+
+module.exports.run = async function ({
+  api,
+  event,
+  message,
+  args,
+  threadID,
+  senderID
+}) {
+
+  const currentEvent = event || {
+    threadID,
+    senderID,
+    body: Array.isArray(args)
+      ? args.join(" ")
+      : String(args || "")
+  };
+
+  return processVoice(
+    api,
+    currentEvent
+  );
+
+};
