@@ -1,68 +1,746 @@
-module.exports.config = {
-  name: "text_voice",
-  version: "1.0",
-  hasPermssion: 0,
-  credits: "🔰𝐑𝐀𝐇𝐀𝐓 𝐈𝐒𝐋𝐀𝐌🔰",
-  description: "নির্দিষ্ট টেক্সট দিলে কিউট মেয়ের ভয়েস প্লে করবে 😍 (ইমোজি নয়)",
-  commandCategory: "noprefix",
-  usages: "𝚃𝚎𝚡𝚃",
-  cooldowns: 5
-};
+/**
+ * ╔══════════════════════════════════════════════╗
+ * ║              🎙️ TEXT VOICE BOT              ║
+ * ║        💠 HRIDOY HASAN SHANTO 💠            ║
+ * ║          ONE-OF RANDOM VOICE SYSTEM         ║
+ * ║              Loader Compatible              ║
+ * ╚══════════════════════════════════════════════╝
+ */
 
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 
-// Text অনুযায়ী audio URL
+// ═══════════════════════════════════════════════
+// 🎙️ TEXT / EMOJI → VOICE MAP
+// 🎲 Multiple URLs = Random One-of System
+// ═══════════════════════════════════════════════
+
 const textAudioMap = {
-  "i love you": "https://files.catbox.moe/npy7kl.mp3",
-  "mata beta": "https://files.catbox.moe/5rdtc6.mp3",
+
+  // ───────────── TEXT VOICES ─────────────
+
+  "🎵": [
+    "https://files.catbox.moe/l0jhdq.mp3"
+  ],
+
+  "ঘুমা": [
+    "https://files.catbox.moe/mofu8n.mp3"
+  ],
+
+  "ভয়েস": [
+    "https://files.catbox.moe/b973ms.mp4"
+  ],
+
+  "😸": [
+    "https://files.catbox.moe/bo0o5e.mp3"
+  ],
+
+  "নাটেক": [
+    "https://files.catbox.moe/8w1wo5.mp3"
+  ],
+
+  "🙏": [
+    "https://files.catbox.moe/i429lj.mp3",
+    "https://files.catbox.moe/7avi7u.mp3"
+  ],
+
+  "এহ": [
+    "https://files.catbox.moe/6tkyn2.mp3"
+  ],
+
+  "ডিলেট": [
+    "https://files.catbox.moe/kcemka.mp4"
+  ],
+
+  "matha betha": [
+    "https://files.catbox.moe/5rdtc6.mp3"
+  ],
+
+  "mata beta": [
+    "https://files.catbox.moe/5rdtc6.mp3"
+  ],
+
+  "মিম": [
+    "https://files.catbox.moe/dz7n65.mp3"
+  ],
+
+  "সর বাল": [
+    "https://files.catbox.moe/q84p1d.mp3"
+  ],
+
+  "কেউ নাই": [
+    "https://files.catbox.moe/3u6shs.mp3"
+  ],
+
+  "good night": [
+    "https://files.catbox.moe/i29m4q.mp3"
+  ],
+
+  "গুড নাইট": [
+    "https://files.catbox.moe/i29m4q.mp3"
+  ],
+
+  "good morning": [
+    "https://files.catbox.moe/8gzqx5.mp3"
+  ],
+
+  "গুড মর্নিং": [
+    "https://files.catbox.moe/8gzqx5.mp3"
+  ],
+
+  "i love you": [
+    "https://files.catbox.moe/y3fk8i.mp3"
+  ],
+
+  "love you": [
+    "https://files.catbox.moe/y3fk8i.mp3"
+  ],
+
+  "@everyone": [
+    "https://files.catbox.moe/3u6shs.mp3"
+  ],
+
+  "ভুদা": [
+    "https://files.catbox.moe/gnyx0p.mp3"
+  ],
+
+  "by": [
+    "https://files.catbox.moe/fdqh2m.mp3"
+  ],
+
+  "বাই": [
+    "https://files.catbox.moe/fdqh2m.mp3"
+  ],
+
+  "বায়": [
+    "https://files.catbox.moe/fdqh2m.mp3"
+  ],
+
+  // ───────────── NEW TEXT VOICES ─────────────
+
+  "🫵😡": [
+    "https://files.catbox.moe/yuonxq.mp3"
+  ],
+
+  "gana": [
+    "https://files.catbox.moe/995anc.mp3"
+  ],
+
+  "dirim": [
+    "https://files.catbox.moe/1rk48q.mp4"
+  ],
+
+  "চুদি": [
+    "https://files.catbox.moe/0ykb7f.mp3"
+  ],
+
+  // ═══════════════════════════════════════════
+  // 😄 EMOJI ONE-OF VOICES
+  // ═══════════════════════════════════════════
+
+  "🥱": [
+    "https://files.catbox.moe/9pou40.mp3",
+    "https://files.catbox.moe/60cwcg.mp3"
+  ],
+
+  "😁": [
+    "https://files.catbox.moe/60cwcg.mp3"
+  ],
+
+  "😌": [
+    "https://files.catbox.moe/epqwbx.mp3"
+  ],
+
+  "🥺": [
+    "https://files.catbox.moe/wc17iq.mp3",
+    "https://files.catbox.moe/dv9why.mp3"
+  ],
+
+  "🤭": [
+    "https://files.catbox.moe/cu0mpy.mp3"
+  ],
+
+  "😅": [
+    "https://files.catbox.moe/jl3pzb.mp3"
+  ],
+
+  "😏": [
+    "https://files.catbox.moe/z9e52r.mp3"
+  ],
+
+  "😞": [
+    "https://files.catbox.moe/tdimtx.mp3"
+  ],
+
+  "🤫": [
+    "https://files.catbox.moe/0uii99.mp3"
+  ],
+
+  "🍼": [
+    "https://files.catbox.moe/p6ht91.mp3"
+  ],
+
+  "🤔": [
+    "https://files.catbox.moe/hy6m6w.mp3"
+  ],
+
+  "🥰": [
+    "https://files.catbox.moe/dv9why.mp3"
+  ],
+
+  "🤦": [
+    "https://files.catbox.moe/ivlvoq.mp3"
+  ],
+
+  "😘": [
+    "https://files.catbox.moe/ma2jlz.mp4",
+    "https://files.catbox.moe/37dqpx.mp3"
+  ],
+
+  "😑": [
+    "https://files.catbox.moe/p78xfw.mp3"
+  ],
+
+  "😢": [
+    "https://files.catbox.moe/shxwj1.mp3"
+  ],
+
+  "🙊": [
+    "https://files.catbox.moe/3bejxv.mp3"
+  ],
+
+  "🤨": [
+    "https://files.catbox.moe/4aci0r.mp3"
+  ],
+
+  "😡": [
+    "https://files.catbox.moe/shxwj1.mp3",
+    "https://files.catbox.moe/h9ekli.mp3"
+  ],
+
+  "🤬": [
+    "https://files.catbox.moe/shxwj1.mp3",
+    "https://files.catbox.moe/h9ekli.mp3"
+  ],
+
+  "🙈": [
+    "https://files.catbox.moe/3qc90y.mp3"
+  ],
+
+  "😍": [
+    "https://files.catbox.moe/qjfk1b.mp3"
+  ],
+
+  "😭": [
+    "https://files.catbox.moe/itm4g0.mp3"
+  ],
+
+  "😱": [
+    "https://files.catbox.moe/mu0kka.mp3"
+  ],
+
+  "😻": [
+    "https://files.catbox.moe/y8ul2j.mp3"
+  ],
+
+  "😿": [
+    "https://files.catbox.moe/tqxemm.mp3"
+  ],
+
+  "💔": [
+    "https://files.catbox.moe/6yanv3.mp3"
+  ],
+
+  "🤣": [
+    "https://files.catbox.moe/2sweut.mp3",
+    "https://files.catbox.moe/jl3pzb.mp3"
+  ],
+
+  "🥹": [
+    "https://files.catbox.moe/jf85xe.mp3"
+  ],
+
+  "বট": [
+    "https://files.catbox.moe/3u6shs.mp3"
+  ],
+
+  "🫣": [
+    "https://files.catbox.moe/ttb6hi.mp3"
+  ],
+
+  "🐸": [
+    "https://files.catbox.moe/utl83s.mp3",
+    "https://files.catbox.moe/sg6ugl.mp3"
+  ],
+
+  "💋": [
+    "https://files.catbox.moe/37dqpx.mp3"
+  ],
+
+  "🫦": [
+    "https://files.catbox.moe/61w3i0.mp3"
+  ],
+
+  "😴": [
+    "https://files.catbox.moe/rm5ozj.mp3"
+  ],
+
+  "😼": [
+    "https://files.catbox.moe/4oz916.mp3"
+  ],
+
+  "🖕": [
+    "https://files.catbox.moe/593u3j.mp3",
+    "https://files.catbox.moe/dtua60.mp3"
+  ],
+
+  "🥵": [
+    "https://files.catbox.moe/l90704.mp3"
+  ],
+
+  "🙂": [
+    "https://files.catbox.moe/4oks08.mp3"
+  ],
+
+  "😒": [
+    "https://files.catbox.moe/mt5il0.mp3"
+  ],
+
+  "😓": [
+    "https://files.catbox.moe/zh3mdg.mp3"
+  ],
+
+  "🤧": [
+    "https://files.catbox.moe/zh3mdg.mp3"
+  ],
+
+  "🙄": [
+    "https://files.catbox.moe/vgzkeu.mp3"
+  ]
+
 };
+
+// ═══════════════════════════════════════════════
+// 🎲 ONE-OF RANDOM VOICE SELECTOR
+// ═══════════════════════════════════════════════
+
+function getRandomVoice(key) {
+
+  const voices = textAudioMap[key];
+
+  if (!voices) return null;
+
+  if (!Array.isArray(voices)) {
+    return voices;
+  }
+
+  if (voices.length === 0) {
+    return null;
+  }
+
+  const randomIndex = Math.floor(
+    Math.random() * voices.length
+  );
+
+  return voices[randomIndex];
+}
+
+// ═══════════════════════════════════════════════
+// 🛡️ DUPLICATE PROTECTION
+// ═══════════════════════════════════════════════
+
+const processedMessages = new Set();
+
+function alreadyProcessed(messageID) {
+
+  if (!messageID) {
+    return false;
+  }
+
+  if (processedMessages.has(messageID)) {
+    return true;
+  }
+
+  processedMessages.add(messageID);
+
+  setTimeout(() => {
+    processedMessages.delete(messageID);
+  }, 30000);
+
+  return false;
+}
+
+// ═══════════════════════════════════════════════
+// 📋 VOICE LIST
+// ═══════════════════════════════════════════════
+
+const voiceList = `
+╔═══『 🎙️ 𝐓𝐄𝐗𝐓 𝐕𝐎𝐈𝐂𝐄 』═══╗
+      🩸 𝐀𝐔𝐓𝐎 𝐕𝐎𝐈𝐂𝐄 𝐋𝐈𝐒𝐓 🩸
+╚════════════════════════════╝
+
+📢 @everyone
+
+╭─━━━━━━━━━━━━━━━━━━─╮
+│ 🎙️ 𝐕𝐎𝐈𝐂𝐄 𝐓𝐑𝐈𝐆𝐆𝐄𝐑𝐒 │
+╰─━━━━━━━━━━━━━━━━━━─╯
+
+🎵 গান
+😴 ঘুমা
+🎙️ ভয়েস
+😸 😸
+😂 নাটেক
+🙏 🙏
+😶 এহ
+🗑️ ডিলেট
+🧠 matha betha
+🧠 mata beta
+😂 মিম
+🤣 সর বাল
+🥺 কেউ নাই
+
+🌙 good night
+🌙 গুড নাইট
+🌅 good morning
+🌅 গুড মর্নিং
+
+❤️ i love you
+❤️ love you
+
+📢 @everyone
+😈 ভুদা
+
+👋 by
+👋 বাই
+👋 বায়
+
+🫵😡
+🎵 gana
+🎙️ dirim
+🔊 চুদি
+
+╭─━━━━━━━━━━━━━━━━━━─╮
+│ 😄 𝐄𝐌𝐎𝐉𝐈 𝐕𝐎𝐈𝐂𝐄 │
+╰─━━━━━━━━━━━━━━━━━━─╯
+
+🥱  😁  😌  🥺
+🤭  😅  😏  😞
+🤫  🍼  🤔  🥰
+🤦  😘  😑  😢
+🙊  🤨  😡  🤬
+🙈  😍  😭  😱
+😻  😿  💔  🤣
+🥹  🫣  🐸  💋
+🫦  😴  😼  🖕
+🥵  🙂  😒  😓
+🤧  🙄
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🎲 Multiple voice থাকলে
+প্রতিবার Random One-of Voice
+
+💠 𝐁𝐎𝐓 : 𝐓𝐄𝐗𝐓 𝐕𝐎𝐈𝐂𝐄
+👑 𝐀𝐃𝐌𝐈𝐍 : 𝐇𝐑𝐈𝐃𝐎𝐘 𝐇𝐀𝐒𝐀𝐍 𝐒𝐇𝐀𝐍𝐓𝐎
+🎙️ 𝐒𝐘𝐒𝐓𝐄𝐌 : 𝐀𝐔𝐓𝐎 𝐕𝐎𝐈𝐂𝐄
+
+━━━━━━━━━━━━━━━━━━━━━━
+`;
+
+// ═══════════════════════════════════════════════
+// ⚙️ CONFIG
+// ═══════════════════════════════════════════════
+
+module.exports.config = {
+
+  name: "text_voice",
+
+  version: "3.0.0",
+
+  hasPermssion: 0,
+
+  credits:
+    "💠 𝐇𝐑𝐈𝐃𝐎𝐘 𝐇𝐀𝐒𝐀𝐍 𝐒𝐇𝐀𝐍𝐓𝐎 💠",
+
+  description:
+    "Text ও Emoji দিলে নির্দিষ্ট voice/audio play করবে",
+
+  commandCategory: "noprefix",
+
+  usages: "Text / Emoji",
+
+  cooldowns: 2
+};
+
+// ═══════════════════════════════════════════════
+// 🎙️ HANDLE EVENT
+// ═══════════════════════════════════════════════
 
 module.exports.handleEvent = async ({ api, event }) => {
-  const { threadID, messageID, body } = event;
-  if (!body) return;
 
-  // ছোট হাতের অক্ষরে রূপান্তর
-  const key = body.trim().toLowerCase();
-
-  const audioUrl = textAudioMap[key];
-  if (!audioUrl) return; // যদি টেক্সট ম্যাপে না থাকে কিছু হবে না
-
-  const cacheDir = path.join(__dirname, 'cache');
-  if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir);
-
-  const filePath = path.join(cacheDir, `${encodeURIComponent(key)}.mp3`);
+  let filePath = null;
 
   try {
+
+    if (!event) return;
+
+    const threadID = event.threadID;
+    const messageID = event.messageID;
+    const body = event.body;
+
+    if (!threadID || !body) {
+      return;
+    }
+
+    // 🛡️ Prevent duplicate processing
+    if (alreadyProcessed(messageID)) {
+      return;
+    }
+
+    const key = String(body)
+      .trim()
+      .toLowerCase();
+
+    // ═══════════════════════════════════════════
+    // 📋 VOICE LIST
+    // ═══════════════════════════════════════════
+
+    const listTriggers = [
+      "voice list",
+      "voicelist",
+      "text voice",
+      "textvoice",
+      "ভয়েস লিস্ট",
+      "ভয়েস লিস্ট",
+      "ভয়েস লিস্ট দাও",
+      "🎤",
+      "command list"
+    ];
+
+    if (listTriggers.includes(key)) {
+
+      return api.sendMessage(
+        voiceList,
+        threadID,
+        messageID
+      );
+    }
+
+    // ═══════════════════════════════════════════
+    // 🎲 RANDOM ONE-OF VOICE
+    // ═══════════════════════════════════════════
+
+    const audioUrl = getRandomVoice(key);
+
+    if (!audioUrl) {
+      return;
+    }
+
+    // ═══════════════════════════════════════════
+    // 📁 CACHE DIRECTORY
+    // ═══════════════════════════════════════════
+
+    const cacheDir = path.join(
+      __dirname,
+      "cache"
+    );
+
+    if (!fs.existsSync(cacheDir)) {
+
+      fs.mkdirSync(cacheDir, {
+        recursive: true
+      });
+
+    }
+
+    // ═══════════════════════════════════════════
+    // 📄 UNIQUE FILE NAME
+    // ═══════════════════════════════════════════
+
+    const safeKey = encodeURIComponent(key);
+
+    const safeMessageID =
+      String(messageID || Date.now())
+        .replace(
+          /[^a-zA-Z0-9_-]/g,
+          ""
+        );
+
+    filePath = path.join(
+      cacheDir,
+      `${safeKey}_${safeMessageID}.audio`
+    );
+
+    // ═══════════════════════════════════════════
+    // ⬇️ DOWNLOAD
+    // ═══════════════════════════════════════════
+
     const response = await axios({
-      method: 'GET',
+
+      method: "GET",
+
       url: audioUrl,
-      responseType: 'stream'
+
+      responseType: "stream",
+
+      timeout: 30000,
+
+      maxRedirects: 5
+
     });
 
-    const writer = fs.createWriteStream(filePath);
+    const writer =
+      fs.createWriteStream(filePath);
+
     response.data.pipe(writer);
 
-    writer.on('finish', () => {
-      api.sendMessage({
-        attachment: fs.createReadStream(filePath)
-      }, threadID, () => {
-        fs.unlink(filePath, (err) => {
-          if (err) console.error("Error deleting file:", err);
-        });
-      }, messageID);
-    });
+    await new Promise(
+      (resolve, reject) => {
 
-    writer.on('error', (err) => {
-      console.error("Error writing file:", err);
-      api.sendMessage("ভয়েস প্লে হয়নি 😅", threadID, messageID);
-    });
+        writer.on(
+          "finish",
+          resolve
+        );
+
+        writer.on(
+          "error",
+          reject
+        );
+
+        response.data.on(
+          "error",
+          reject
+        );
+
+      }
+    );
+
+    // ═══════════════════════════════════════════
+    // 🎙️ SEND ONLY ONCE
+    // ═══════════════════════════════════════════
+
+    await new Promise(
+      (resolve, reject) => {
+
+        let callbackCalled = false;
+
+        api.sendMessage(
+
+          {
+            attachment:
+              fs.createReadStream(
+                filePath
+              )
+          },
+
+          threadID,
+
+          (err) => {
+
+            if (callbackCalled) {
+              return;
+            }
+
+            callbackCalled = true;
+
+            if (err) {
+              reject(err);
+              return;
+            }
+
+            resolve();
+
+          },
+
+          messageID
+
+        );
+
+      }
+    );
+
+    // ═══════════════════════════════════════════
+    // 🗑️ CACHE CLEANUP
+    // ═══════════════════════════════════════════
+
+    setTimeout(() => {
+
+      if (!filePath) {
+        return;
+      }
+
+      fs.unlink(
+        filePath,
+        (err) => {
+
+          if (
+            err &&
+            err.code !== "ENOENT"
+          ) {
+
+            console.error(
+              "[TEXT_VOICE] Cache delete error:",
+              err.message
+            );
+
+          }
+
+        }
+      );
+
+    }, 1000);
 
   } catch (error) {
-    console.error("Error downloading audio:", error);
-    api.sendMessage("ভয়েস প্লে হয়নি 😅", threadID, messageID);
+
+    console.error(
+      "[TEXT_VOICE] Error:",
+      error.message
+    );
+
+    // ═══════════════════════════════════════════
+    // 🗑️ ERROR CLEANUP
+    // ═══════════════════════════════════════════
+
+    try {
+
+      if (
+        filePath &&
+        fs.existsSync(filePath)
+      ) {
+
+        fs.unlink(
+          filePath,
+          () => {}
+        );
+
+      }
+
+    } catch (_) {}
+
+    // ═══════════════════════════════════════════
+    // ❌ ERROR MESSAGE
+    // ═══════════════════════════════════════════
+
+    try {
+
+      if (
+        event &&
+        event.threadID
+      ) {
+
+        await api.sendMessage(
+          "❌ ভয়েস প্লে করা যায়নি 😅",
+          event.threadID,
+          event.messageID
+        );
+
+      }
+
+    } catch (_) {}
+
   }
+
 };
 
-module.exports.run = () => {};
+এখন একটাই "text_voice.js" ফাইলে সবগুলো থাকবে। Multiple URL থাকা trigger-গুলোতে প্রতিবার random একটি voice নির্বাচন হবে এবং একই message ID দ্বিতীয়বার process হবে না।
