@@ -1,100 +1,237 @@
 /**
  * ╔══════════════════════════════════════════════╗
- * ║             MIRAI BOT — AUTOREACT            ║
- * ║        Developer: HRIDOY HASAN SHANTO        ║
- * ║                  Version: 1.0.1              ║
+ * ║              🤖 AUTO REACT BOT              ║
+ * ║          💠 HRIDOY HASAN SHANTO 💠          ║
+ * ║                 Version 2.0.0               ║
  * ╚══════════════════════════════════════════════╝
  */
 
-module.exports = {
-  config: {
-    name: "autoreact",
-    version: "1.0.1",
-    author: "HRIDOY HASAN SHANTO",
+module.exports.config = {
+  name: "autoreact",
+  version: "2.0.0",
+  hasPermission: 0,
+  credits: "HRIDOY HASAN SHANTO",
+  description: "Automatically reacts to every new message",
+  commandCategory: "No Prefix",
+  cooldowns: 0,
+  usages: "autoreact [on/off/toggle]"
+};
 
-    // ✅ Mirai loader compatibility
-    commandCategory: "system",
+// =====================================================
+// 😍 REACTION LIST
+// =====================================================
 
-    countDown: 5,
-    role: 0,
+const emojis = [
+  // Faces
+  "😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇",
+  "🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚",
+  "😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🤩",
+  "🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣",
+  "😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤬",
+  "🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🤗",
+  "🤭","🫢","🫣","🤫","🤔","🫡","🤐","😐","😑","😶",
+  "🙄","😬","😮","😯","😲","😴","🤤","😪","😵","🥴",
+  "🤢","🤮","🤧","😷","🤠","🥸","😈","👿","👹","👺",
+  "🤡","💩","👻","💀","☠️","👽","👾","🤖",
 
-    shortDescription: "Automatic message reaction",
-    longDescription: "Automatically reacts to specific words and emojis."
-  },
+  // ❤️ Hearts
+  "❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","🩷",
+  "🩵","🩶","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗",
+  "💖","💘","💝","💟","❣️","💯","💫","✨","⭐","🌟",
+  "🔥","💥","⚡","🌈",
 
-  // ✅ Required command function
-  run: async function ({ api, event }) {
-    // Autoreact works through handleEvent
-  },
+  // 🌸 Nature
+  "☀️","🌙","🌸","🌺","🌻","🌹","🌷","🌼","💐",
+  "🍀","🌿","🍁","🍂","🍃","🌱","🌴","🌵",
 
-  // ✅ Message event listener
-  handleEvent: async function ({ api, event }) {
-    try {
-      if (!event || !event.body) return;
+  // 🤝 Hands
+  "👍","👎","👌","✌️","🤞","🤟","🤘","🤙","👋","👏",
+  "🙌","👐","🤲","🙏","💪","🫶","🫰","🤌","✍️","🤳",
+  "💅","👀","👄","👂","👃","🧠","💋",
 
-      const text = String(event.body).toLowerCase();
+  // 🎉 Fun
+  "🎉","🎊","🎈","🎁","🎂","🎀","🎵","🎶","🎸","🎹",
+  "🥁","🎧","🎤","🎬","🎮","🏆","🥇","🥈","🥉","🚀",
 
-      const reactions = [
-        ["iloveyou", "😙"],
-        ["good night", "💗"],
-        ["good morning", "💗"],
-        ["pakyo", "😠"],
-        ["mahal", "💗"],
-        ["mwa", "💗"],
+  // 🐾 Animals
+  "🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯",
+  "🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧",
+  "🐦","🦋","🐝","🐞","🦄","🐴","🐢","🐍","🦎","🐊",
+  "🐳","🐬","🐟","🐠","🦈","🐙","🦀","🦐","🦑","🐚"
+];
 
-        ["😢", "😢"],
-        ["😆", "😆"],
-        ["😂", "😆"],
-        ["🤣", "😆"],
+// =====================================================
+// 🔧 HELPERS
+// =====================================================
 
-        ["tangina", "😡"],
-        ["good afternoon", "❤"],
-        ["good evening", "❤"],
-        ["gago", "😡"],
+function getRandomEmoji() {
+  return emojis[Math.floor(Math.random() * emojis.length)];
+}
 
-        ["bastos", "😳"],
-        ["bas2s", "😳"],
-        ["bastog", "😳"],
+function isEnabled(threadData) {
+  return threadData && threadData["autoreact"] === true;
+}
 
-        ["hi", "💗"],
-        ["hello", "💗"],
-        ["zope", "⏳"],
+// =====================================================
+// ⚡ AUTO REACT EVENT
+// =====================================================
 
-        ["pangit", "😠"],
-        ["redroom", "😏"],
-        ["😏", "😏"],
+module.exports.handleEvent = async ({ api, event }) => {
+  try {
+    if (!event || !event.threadID || !event.messageID) return;
 
-        ["pakyu", "🤬"],
-        ["fuck you", "🤬"],
+    // Ignore bot messages
+    if (event.isGroup === false && !event.threadID) return;
 
-        ["bata", "👧"],
-        ["kid", "👧"],
+    const threadData =
+      global.data?.threadData?.get(event.threadID) || {};
 
-        ["i hate you", "😞"],
-        ["useless", "😓"],
-        ["omg", "😮"],
+    // Auto-react disabled
+    if (!isEnabled(threadData)) return;
 
-        ["shoti", "😏"],
-        ["pogi", "😎"],
-        ["ganda", "💗"],
+    const reaction = getRandomEmoji();
 
-        ["i miss you", "💗"],
-        ["sad", "😔"]
-      ];
-
-      for (const [keyword, reaction] of reactions) {
-        if (text.includes(keyword)) {
-          await api.setMessageReaction(
-            reaction,
-            event.messageID,
-            event.threadID
+    api.setMessageReaction(
+      reaction,
+      event.messageID,
+      (error) => {
+        if (error) {
+          console.error(
+            `[AUTOREACT] Failed: ${error.message || error}`
           );
-          break;
         }
-      }
+      },
+      true
+    );
 
-    } catch (error) {
-      console.error("❌ AUTOREACT ERROR:", error);
-    }
+  } catch (error) {
+    console.error(
+      `[AUTOREACT] Event Error: ${error.message || error}`
+    );
   }
 };
+
+// =====================================================
+// 🎛️ COMMAND
+// =====================================================
+
+module.exports.run = async ({ api, event, Threads }) => {
+  try {
+    const { threadID, messageID, body = "" } = event;
+
+    const threadInfo = await Threads.getData(threadID);
+
+    if (!threadInfo || !threadInfo.data) {
+      return api.sendMessage(
+        "❌ Thread data পাওয়া যায়নি!",
+        threadID,
+        messageID
+      );
+    }
+
+    const data = threadInfo.data;
+
+    const args = body
+      .trim()
+      .split(/\s+/)
+      .slice(1);
+
+    const action = (args[0] || "toggle").toLowerCase();
+
+    // ===============================
+    // ON
+    // ===============================
+
+    if (action === "on") {
+      data.autoreact = true;
+    }
+
+    // ===============================
+    // OFF
+    // ===============================
+
+    else if (action === "off") {
+      data.autoreact = false;
+    }
+
+    // ===============================
+    // TOGGLE
+    // ===============================
+
+    else if (action === "toggle") {
+      data.autoreact = !data.autoreact;
+    }
+
+    // ===============================
+    // INVALID
+    // ===============================
+
+    else {
+      return api.sendMessage(
+        "❌ ভুল ব্যবহার!\n\n" +
+        "✅ autoreact on\n" +
+        "❌ autoreact off\n" +
+        "🔄 autoreact toggle",
+        threadID,
+        messageID
+      );
+    }
+
+    // Save thread data
+    await Threads.setData(threadID, {
+      data: data
+    });
+
+    // Update global cache
+    if (global.data?.threadData) {
+      global.data.threadData.set(threadID, data);
+    }
+
+    const status = data.autoreact === true;
+
+    return api.sendMessage(
+      status
+        ? "╭──────────────╮\n" +
+          "│ 🤖 AUTO REACT │\n" +
+          "├──────────────┤\n" +
+          "│ 🟢 Status: ON │\n" +
+          "│ 💫 Random React Active\n" +
+          "╰──────────────╯"
+        : "╭──────────────╮\n" +
+          "│ 🤖 AUTO REACT │\n" +
+          "├──────────────┤\n" +
+          "│ 🔴 Status: OFF│\n" +
+          "╰──────────────╯",
+      threadID,
+      messageID
+    );
+
+  } catch (error) {
+    console.error(
+      `[AUTOREACT] Command Error: ${error.message || error}`
+    );
+
+    return api.sendMessage(
+      "❌ Auto-react চালু/বন্ধ করতে সমস্যা হয়েছে!\n\n" +
+      `🔴 Error: ${error.message || error}`,
+      event.threadID,
+      event.messageID
+    );
+  }
+};
+
+ব্যবহার
+
+autoreact on
+
+🟢 Auto-react চালু
+
+autoreact off
+
+🔴 Auto-react বন্ধ
+
+autoreact toggle
+
+🔄 বর্তমান অবস্থার বিপরীত করবে
+
+গুরুত্বপূর্ণ: এখানে আগের ""🥰"" key-এর বদলে পরিষ্কারভাবে ""autoreact"" key ব্যবহার করেছি, তাই অন্য কোনো ""🥰"" thread setting-এর সঙ্গে conflict হবে না।
