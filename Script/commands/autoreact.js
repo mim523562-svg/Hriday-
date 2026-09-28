@@ -1,112 +1,324 @@
 /**
  * ╔══════════════════════════════════════════════╗
- * ║              🤖 AUTO REACT BOT              ║
+ * ║            🤖 AUTO REACT BOT v3.0           ║
  * ║          💠 HRIDOY HASAN SHANTO 💠          ║
- * ║                 Version 2.0.0               ║
  * ╚══════════════════════════════════════════════╝
+ *
+ * Compatible:
+ * ✅ GoatBot / FCA style
+ * ✅ Mirai-style command loader
+ *
+ * Features:
+ * ✅ autoreact on
+ * ✅ autoreact off
+ * ✅ autoreact toggle
+ * ✅ JSON thread storage
+ * ✅ Random reactions
+ * ✅ Duplicate protection
+ * ✅ Bot/self message protection
+ * ✅ Detailed error logs
  */
+
+const fs = require("fs-extra");
+const path = require("path");
+
+// =====================================================
+// ⚙️ CONFIG
+// =====================================================
 
 module.exports.config = {
   name: "autoreact",
-  version: "2.0.0",
+  version: "3.0.0",
   hasPermission: 0,
   credits: "HRIDOY HASAN SHANTO",
-  description: "Automatically reacts to every new message",
+  description: "Automatically reacts to new messages",
   commandCategory: "No Prefix",
   cooldowns: 0,
-  usages: "autoreact [on/off/toggle]"
+  usages: "autoreact on/off/toggle"
 };
+
+// =====================================================
+// 📁 JSON DATABASE
+// =====================================================
+
+const DB_DIR = path.join(__dirname, "..", "data");
+const DB_FILE = path.join(DB_DIR, "autoreact.json");
+
+try {
+  fs.ensureDirSync(DB_DIR);
+
+  if (!fs.existsSync(DB_FILE)) {
+    fs.writeJsonSync(DB_FILE, {}, { spaces: 2 });
+  }
+} catch (error) {
+  console.error(
+    `[AUTOREACT] Database initialization failed:\n${error.stack || error}`
+  );
+}
+
+// =====================================================
+// 🧠 MEMORY / CACHE
+// =====================================================
+
+const processedMessages = new Set();
+const reactingMessages = new Set();
+
+// Keep memory from growing forever
+function cleanupSet(set, value) {
+  setTimeout(() => {
+    set.delete(value);
+  }, 30000);
+}
+
+// =====================================================
+// 📖 DATABASE HELPERS
+// =====================================================
+
+function readDB() {
+  try {
+    if (!fs.existsSync(DB_FILE)) {
+      fs.writeJsonSync(DB_FILE, {}, { spaces: 2 });
+    }
+
+    return fs.readJsonSync(DB_FILE);
+  } catch (error) {
+    console.error(
+      `[AUTOREACT] JSON READ ERROR:\n${error.stack || error}`
+    );
+
+    return {};
+  }
+}
+
+function writeDB(data) {
+  try {
+    fs.writeJsonSync(DB_FILE, data, { spaces: 2 });
+    return true;
+  } catch (error) {
+    console.error(
+      `[AUTOREACT] JSON WRITE ERROR:\n${error.stack || error}`
+    );
+
+    return false;
+  }
+}
+
+function getStatus(threadID) {
+  const db = readDB();
+
+  return db[String(threadID)] === true;
+}
+
+function setStatus(threadID, status) {
+  const db = readDB();
+
+  db[String(threadID)] = Boolean(status);
+
+  return writeDB(db);
+}
 
 // =====================================================
 // 😍 REACTION LIST
 // =====================================================
 
 const emojis = [
-  // Faces
-  "😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇",
-  "🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚",
-  "😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🤩",
-  "🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣",
-  "😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤬",
-  "🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🤗",
-  "🤭","🫢","🫣","🤫","🤔","🫡","🤐","😐","😑","😶",
-  "🙄","😬","😮","😯","😲","😴","🤤","😪","😵","🥴",
-  "🤢","🤮","🤧","😷","🤠","🥸","😈","👿","👹","👺",
-  "🤡","💩","👻","💀","☠️","👽","👾","🤖",
+  "😀", "😃", "😄", "😁", "😆", "😂", "🤣",
+  "😊", "😇", "🙂", "😉", "😌", "😍", "🥰",
+  "😘", "😗", "😙", "😚", "😋", "😛", "😝",
+  "😜", "🤪", "🤓", "😎", "🤩", "🥳", "😏",
+  "😒", "😞", "😔", "😟", "😕", "🙁", "😣",
+  "😖", "😫", "😩", "🥺", "😢", "😭", "😤",
+  "😠", "😡", "🤬", "🤯", "😳", "😱", "🤗",
+  "🤭", "🤫", "🤔", "🤐", "😐", "😑", "😶",
+  "🙄", "😬", "😮", "😯", "😲", "😴", "🤤",
+  "🥴", "🤢", "🤮", "🤧", "😷", "🤠", "🥸",
+  "😈", "👿", "🤡", "👻", "💀", "👽", "🤖",
 
-  // ❤️ Hearts
-  "❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","🩷",
-  "🩵","🩶","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓","💗",
-  "💖","💘","💝","💟","❣️","💯","💫","✨","⭐","🌟",
-  "🔥","💥","⚡","🌈",
+  "❤️", "🧡", "💛", "💚", "💙", "💜", "🖤",
+  "🤍", "🤎", "🩷", "🩵", "🩶", "💔", "💕",
+  "💞", "💓", "💗", "💖", "💘", "💝", "💟",
+  "💯", "💫", "✨", "⭐", "🌟", "🔥", "💥",
+  "⚡", "🌈",
 
-  // 🌸 Nature
-  "☀️","🌙","🌸","🌺","🌻","🌹","🌷","🌼","💐",
-  "🍀","🌿","🍁","🍂","🍃","🌱","🌴","🌵",
+  "🌸", "🌺", "🌻", "🌹", "🌷", "🌼", "💐",
+  "🍀", "🌿", "🍁", "🍂", "🍃", "🌱",
 
-  // 🤝 Hands
-  "👍","👎","👌","✌️","🤞","🤟","🤘","🤙","👋","👏",
-  "🙌","👐","🤲","🙏","💪","🫶","🫰","🤌","✍️","🤳",
-  "💅","👀","👄","👂","👃","🧠","💋",
+  "👍", "👎", "👌", "✌️", "🤞", "🤟", "🤘",
+  "🤙", "👋", "👏", "🙌", "👐", "🤲", "🙏",
+  "💪", "🫶", "🫰", "🤌", "💅", "👀",
 
-  // 🎉 Fun
-  "🎉","🎊","🎈","🎁","🎂","🎀","🎵","🎶","🎸","🎹",
-  "🥁","🎧","🎤","🎬","🎮","🏆","🥇","🥈","🥉","🚀",
+  "🎉", "🎊", "🎈", "🎁", "🎂", "🎀", "🎵",
+  "🎶", "🎸", "🎹", "🎧", "🎤", "🎬", "🎮",
+  "🏆", "🥇", "🚀",
 
-  // 🐾 Animals
-  "🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯",
-  "🦁","🐮","🐷","🐸","🐵","🙈","🙉","🙊","🐔","🐧",
-  "🐦","🦋","🐝","🐞","🦄","🐴","🐢","🐍","🦎","🐊",
-  "🐳","🐬","🐟","🐠","🦈","🐙","🦀","🦐","🦑","🐚"
+  "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻",
+  "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐸",
+  "🐵", "🙈", "🙉", "🙊", "🐔", "🐧", "🐦",
+  "🦋", "🐝", "🦄", "🐴", "🐢", "🐍", "🐳",
+  "🐬", "🐟", "🐠", "🐙"
 ];
 
-// =====================================================
-// 🔧 HELPERS
-// =====================================================
-
-function getRandomEmoji() {
+function randomEmoji() {
   return emojis[Math.floor(Math.random() * emojis.length)];
 }
 
-function isEnabled(threadData) {
-  return threadData && threadData["autoreact"] === true;
+// =====================================================
+// 🛡️ SELF/BOT MESSAGE DETECTION
+// =====================================================
+
+function isBotMessage(api, event) {
+  try {
+    if (!event) return true;
+
+    // FCA/Mirai event flag
+    if (
+      event.senderID &&
+      api?.getCurrentUserID &&
+      String(event.senderID) === String(api.getCurrentUserID())
+    ) {
+      return true;
+    }
+
+    // Some loaders provide this
+    if (event.isBot === true) return true;
+
+    // Prevent reacting to our own command/reply
+    if (
+      event.senderID &&
+      global.botID &&
+      String(event.senderID) === String(global.botID)
+    ) {
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error(
+      `[AUTOREACT] BOT CHECK ERROR:\n${error.stack || error}`
+    );
+
+    return false;
+  }
 }
 
 // =====================================================
-// ⚡ AUTO REACT EVENT
+// 🚫 COMMAND MESSAGE DETECTION
+// =====================================================
+
+function isAutoReactCommand(event) {
+  const body = String(event?.body || "")
+    .trim()
+    .toLowerCase();
+
+  return /^autoreact(\s+|$)/i.test(body);
+}
+
+// =====================================================
+// ⚡ SEND REACTION
+// =====================================================
+
+async function reactToMessage(api, event) {
+  const threadID = String(event.threadID);
+  const messageID = String(event.messageID);
+
+  const uniqueID = `${threadID}:${messageID}`;
+
+  // Duplicate protection
+  if (processedMessages.has(uniqueID)) {
+    return;
+  }
+
+  if (reactingMessages.has(uniqueID)) {
+    return;
+  }
+
+  processedMessages.add(uniqueID);
+  reactingMessages.add(uniqueID);
+
+  cleanupSet(processedMessages, uniqueID);
+  cleanupSet(reactingMessages, uniqueID);
+
+  const reaction = randomEmoji();
+
+  try {
+    if (typeof api.setMessageReaction !== "function") {
+      console.error(
+        "[AUTOREACT] ERROR: api.setMessageReaction() is not available."
+      );
+
+      reactingMessages.delete(uniqueID);
+      return;
+    }
+
+    /*
+     * FCA signature:
+     * api.setMessageReaction(reaction, messageID, callback, force)
+     */
+
+    api.setMessageReaction(
+      reaction,
+      messageID,
+      (error) => {
+        reactingMessages.delete(uniqueID);
+
+        if (error) {
+          console.error(
+            `[AUTOREACT] REACTION FAILED
+Thread: ${threadID}
+Message: ${messageID}
+Reaction: ${reaction}
+Error: ${error.message || error}`
+          );
+          return;
+        }
+
+        console.log(
+          `[AUTOREACT] Reacted ${reaction} | Thread: ${threadID} | Message: ${messageID}`
+        );
+      },
+      true
+    );
+  } catch (error) {
+    reactingMessages.delete(uniqueID);
+
+    console.error(
+      `[AUTOREACT] REACTION EXCEPTION
+Thread: ${threadID}
+Message: ${messageID}
+Error: ${error.stack || error}`
+    );
+  }
+}
+
+// =====================================================
+// 📩 EVENT HANDLER
 // =====================================================
 
 module.exports.handleEvent = async ({ api, event }) => {
   try {
-    if (!event || !event.threadID || !event.messageID) return;
+    if (!event) return;
 
-    // Ignore bot messages
-    if (event.isGroup === false && !event.threadID) return;
+    if (!event.threadID) return;
+    if (!event.messageID) return;
 
-    const threadData =
-      global.data?.threadData?.get(event.threadID) || {};
+    // Ignore own/bot messages
+    if (isBotMessage(api, event)) return;
 
-    // Auto-react disabled
-    if (!isEnabled(threadData)) return;
+    // Ignore autoreact command itself
+    if (isAutoReactCommand(event)) return;
 
-    const reaction = getRandomEmoji();
+    const threadID = String(event.threadID);
 
-    api.setMessageReaction(
-      reaction,
-      event.messageID,
-      (error) => {
-        if (error) {
-          console.error(
-            `[AUTOREACT] Failed: ${error.message || error}`
-          );
-        }
-      },
-      true
-    );
+    // Check JSON storage
+    if (!getStatus(threadID)) {
+      return;
+    }
+
+    await reactToMessage(api, event);
 
   } catch (error) {
     console.error(
-      `[AUTOREACT] Event Error: ${error.message || error}`
+      `[AUTOREACT] EVENT ERROR:\n${error.stack || error}`
     );
   }
 };
@@ -115,123 +327,131 @@ module.exports.handleEvent = async ({ api, event }) => {
 // 🎛️ COMMAND
 // =====================================================
 
-module.exports.run = async ({ api, event, Threads }) => {
+module.exports.run = async ({ api, event }) => {
   try {
-    const { threadID, messageID, body = "" } = event;
-
-    const threadInfo = await Threads.getData(threadID);
-
-    if (!threadInfo || !threadInfo.data) {
-      return api.sendMessage(
-        "❌ Thread data পাওয়া যায়নি!",
-        threadID,
-        messageID
-      );
+    if (!event || !event.threadID) {
+      return;
     }
 
-    const data = threadInfo.data;
+    const threadID = String(event.threadID);
+    const messageID = event.messageID;
+
+    const body = String(event.body || "").trim();
 
     const args = body
-      .trim()
       .split(/\s+/)
       .slice(1);
 
-    const action = (args[0] || "toggle").toLowerCase();
+    const action = String(args[0] || "toggle").toLowerCase();
 
-    // ===============================
-    // ON
-    // ===============================
+    let status;
+
+    // =================================================
+    // 🟢 ON
+    // =================================================
 
     if (action === "on") {
-      data.autoreact = true;
+      status = true;
     }
 
-    // ===============================
-    // OFF
-    // ===============================
+    // =================================================
+    // 🔴 OFF
+    // =================================================
 
     else if (action === "off") {
-      data.autoreact = false;
+      status = false;
     }
 
-    // ===============================
-    // TOGGLE
-    // ===============================
+    // =================================================
+    // 🔄 TOGGLE
+    // =================================================
 
     else if (action === "toggle") {
-      data.autoreact = !data.autoreact;
+      status = !getStatus(threadID);
     }
 
-    // ===============================
-    // INVALID
-    // ===============================
+    // =================================================
+    // ❌ INVALID
+    // =================================================
 
     else {
       return api.sendMessage(
-        "❌ ভুল ব্যবহার!\n\n" +
-        "✅ autoreact on\n" +
-        "❌ autoreact off\n" +
-        "🔄 autoreact toggle",
+        "╭───────────────╮\n" +
+        "│ 🤖 AUTO REACT │\n" +
+        "├───────────────┤\n" +
+        "│ ❌ ভুল ব্যবহার!\n" +
+        "│\n" +
+        "│ 🟢 autoreact on\n" +
+        "│ 🔴 autoreact off\n" +
+        "│ 🔄 autoreact toggle\n" +
+        "╰───────────────╯",
         threadID,
         messageID
       );
     }
 
-    // Save thread data
-    await Threads.setData(threadID, {
-      data: data
-    });
+    // =================================================
+    // 💾 SAVE
+    // =================================================
 
-    // Update global cache
-    if (global.data?.threadData) {
-      global.data.threadData.set(threadID, data);
+    const saved = setStatus(threadID, status);
+
+    if (!saved) {
+      return api.sendMessage(
+        "❌ Auto-react status save করা যায়নি!\n\n" +
+        "⚠️ Console log চেক করুন।",
+        threadID,
+        messageID
+      );
     }
 
-    const status = data.autoreact === true;
+    // =================================================
+    // 📤 RESPONSE
+    // =================================================
+
+    if (status) {
+      return api.sendMessage(
+        "╭────────────────╮\n" +
+        "│ 🤖 AUTO REACT  │\n" +
+        "├────────────────┤\n" +
+        "│ 🟢 Status: ON  │\n" +
+        "│ 💫 Random React Active\n" +
+        "│ 🛡️ Duplicate Protection: ON\n" +
+        "│ 💾 JSON Storage: ON\n" +
+        "╰────────────────╯",
+        threadID,
+        messageID
+      );
+    }
 
     return api.sendMessage(
-      status
-        ? "╭──────────────╮\n" +
-          "│ 🤖 AUTO REACT │\n" +
-          "├──────────────┤\n" +
-          "│ 🟢 Status: ON │\n" +
-          "│ 💫 Random React Active\n" +
-          "╰──────────────╯"
-        : "╭──────────────╮\n" +
-          "│ 🤖 AUTO REACT │\n" +
-          "├──────────────┤\n" +
-          "│ 🔴 Status: OFF│\n" +
-          "╰──────────────╯",
+      "╭────────────────╮\n" +
+      "│ 🤖 AUTO REACT  │\n" +
+      "├────────────────┤\n" +
+      "│ 🔴 Status: OFF │\n" +
+      "│ 🛑 Auto React Disabled\n" +
+      "╰────────────────╯",
       threadID,
       messageID
     );
 
   } catch (error) {
     console.error(
-      `[AUTOREACT] Command Error: ${error.message || error}`
+      `[AUTOREACT] COMMAND ERROR:\n${error.stack || error}`
     );
 
-    return api.sendMessage(
-      "❌ Auto-react চালু/বন্ধ করতে সমস্যা হয়েছে!\n\n" +
-      `🔴 Error: ${error.message || error}`,
-      event.threadID,
-      event.messageID
-    );
+    try {
+      return api.sendMessage(
+        "❌ Auto-react চালু/বন্ধ করতে সমস্যা হয়েছে!\n\n" +
+        "🔴 Error: " +
+        (error.message || error),
+        event.threadID,
+        event.messageID
+      );
+    } catch (sendError) {
+      console.error(
+        `[AUTOREACT] ERROR MESSAGE SEND FAILED:\n${sendError.stack || sendError}`
+      );
+    }
   }
 };
-
-ব্যবহার
-
-autoreact on
-
-🟢 Auto-react চালু
-
-autoreact off
-
-🔴 Auto-react বন্ধ
-
-autoreact toggle
-
-🔄 বর্তমান অবস্থার বিপরীত করবে
-
-গুরুত্বপূর্ণ: এখানে আগের ""🥰"" key-এর বদলে পরিষ্কারভাবে ""autoreact"" key ব্যবহার করেছি, তাই অন্য কোনো ""🥰"" thread setting-এর সঙ্গে conflict হবে না।
