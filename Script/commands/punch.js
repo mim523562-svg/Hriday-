@@ -3,7 +3,7 @@ const fs = require("fs");
 const axios = require("axios");
 
 module.exports.config = {
-  name: "punch",
+  name: "👊",
   version: "1.0.0",
   hasPermssion: 0,
   credits: "Kaneki",
