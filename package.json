@@ -4,7 +4,7 @@
   "description": "Facebook Messenger bot",
   "main": "Xrahat.js",
   "engines": {
-    "node": "20.x",
+    "node": "22.19.0",
     "npm": ">=10.0.0"
   },
   "scripts": {
@@ -91,6 +91,8 @@
     "node-fetch": "^2.7.0",
     "node-schedule": "^2.1.1",
     "node-schedule-tz": "^1.2.1-4",
+    "node-superfetch": "^0.2.3",
+    "node": "^22.19.0",
     "node-superfetch": "^0.2.3",
     "npm": "^9.9.4",
     "npmlog": "^7.0.1",
