@@ -1,7 +1,7 @@
 <br />
 <p align="center">
     <a href="https://i.imgur.com/RAGeeXP.jpeg">
-        <img src="https://i.imgur.com/UrcGkA9.jpeg4%B0+Rahat+BoT+%F0%9F%94%B0" alt="Logo">
+        <img src="https://i.imgur.com/RAGeeXP.jpeg" alt="Logo">
     </a>
     <p align="center">
 <a href="https://t.me/education_of_purpose" target="_blank">
