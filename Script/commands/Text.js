@@ -29,17 +29,8 @@ const textAudioMap = {
     "https://files.catbox.moe/b973ms.mp4"
   ],
 
-  "😸": [
-    "https://files.catbox.moe/bo0o5e.mp3"
-  ],
-
   "নাটেক": [
     "https://files.catbox.moe/8w1wo5.mp3"
-  ],
-
-  "🙏": [
-    "https://files.catbox.moe/i429lj.mp3",
-    "https://files.catbox.moe/7avi7u.mp3"
   ],
 
   "এহ": [
@@ -131,187 +122,139 @@ const textAudioMap = {
   ],
 
   // ═══════════════════════════════════════════
-  // 😄 EMOJI
+  // 😄 NEW EMOJI VOICE
   // ═══════════════════════════════════════════
 
-  "🥱": [
-    "https://files.catbox.moe/9pou40.mp3",
-    "https://files.catbox.moe/60cwcg.mp3"
+  "☺️": [
+    "https://files.catbox.moe/p2mi4u.mp3"
   ],
 
-  "😁": [
-    "https://files.catbox.moe/60cwcg.mp3"
+  "😊": [
+    "https://files.catbox.moe/p2mi4u.mp3"
   ],
 
-  "😌": [
-    "https://files.catbox.moe/epqwbx.mp3"
+  "🌚": [
+    "https://files.catbox.moe/ze3wu1.mp3"
   ],
 
-  "🥺": [
-    "https://files.catbox.moe/wc17iq.mp3",
-    "https://files.catbox.moe/dv9why.mp3"
-  ],
-
-  "🤭": [
-    "https://files.catbox.moe/cu0mpy.mp3"
-  ],
-
-  "😅": [
-    "https://files.catbox.moe/jl3pzb.mp3"
-  ],
-
-  "😏": [
-    "https://files.catbox.moe/z9e52r.mp3"
-  ],
-
-  "😞": [
-    "https://files.catbox.moe/tdimtx.mp3"
-  ],
-
-  "🤫": [
-    "https://files.catbox.moe/0uii99.mp3"
-  ],
-
-  "🍼": [
-    "https://files.catbox.moe/p6ht91.mp3"
-  ],
-
-  "🤔": [
-    "https://files.catbox.moe/hy6m6w.mp3"
-  ],
-
-  "🥰": [
-    "https://files.catbox.moe/dv9why.mp3"
-  ],
-
-  "🤦": [
-    "https://files.catbox.moe/ivlvoq.mp3"
-  ],
-
-  "😘": [
-    "https://files.catbox.moe/ma2jlz.mp4",
-    "https://files.catbox.moe/37dqpx.mp3"
-  ],
-
-  "😑": [
-    "https://files.catbox.moe/p78xfw.mp3"
-  ],
-
-  "😢": [
-    "https://files.catbox.moe/shxwj1.mp3"
-  ],
-
-  "🙊": [
-    "https://files.catbox.moe/3bejxv.mp3"
-  ],
-
-  "🤨": [
-    "https://files.catbox.moe/4aci0r.mp3"
-  ],
-
-  "😡": [
-    "https://files.catbox.moe/shxwj1.mp3",
-    "https://files.catbox.moe/h9ekli.mp3"
-  ],
-
-  "🤬": [
-    "https://files.catbox.moe/shxwj1.mp3",
-    "https://files.catbox.moe/h9ekli.mp3"
-  ],
-
-  "🙈": [
-    "https://files.catbox.moe/3qc90y.mp3"
-  ],
-
-  "😍": [
-    "https://files.catbox.moe/qjfk1b.mp3"
-  ],
-
-  "😭": [
-    "https://files.catbox.moe/itm4g0.mp3"
-  ],
-
-  "😱": [
-    "https://files.catbox.moe/mu0kka.mp3"
-  ],
-
-  "😻": [
-    "https://files.catbox.moe/y8ul2j.mp3"
-  ],
-
-  "😿": [
-    "https://files.catbox.moe/tqxemm.mp3"
-  ],
-
-  "💔": [
-    "https://files.catbox.moe/6yanv3.mp3"
-  ],
-
-  "🤣": [
-    "https://files.catbox.moe/2sweut.mp3",
-    "https://files.catbox.moe/jl3pzb.mp3"
-  ],
-
-  "🥹": [
-    "https://files.catbox.moe/jf85xe.mp3"
-  ],
-
-  "বট": [
-    "https://files.catbox.moe/3u6shs.mp3"
-  ],
-
-  "🫣": [
-    "https://files.catbox.moe/ttb6hi.mp3"
+  "🌝": [
+    "https://files.catbox.moe/ze3wu1.mp3"
   ],
 
   "🐸": [
-    "https://files.catbox.moe/utl83s.mp3",
-    "https://files.catbox.moe/sg6ugl.mp3"
+    "https://files.catbox.moe/9u1857.mp3"
   ],
 
-  "💋": [
-    "https://files.catbox.moe/37dqpx.mp3"
-  ],
-
-  "🫦": [
-    "https://files.catbox.moe/61w3i0.mp3"
-  ],
-
-  "😴": [
-    "https://files.catbox.moe/rm5ozj.mp3"
-  ],
-
-  "😼": [
-    "https://files.catbox.moe/4oz916.mp3"
+  "👀": [
+    "https://files.catbox.moe/372kl0.mp3"
   ],
 
   "🖕": [
-    "https://files.catbox.moe/593u3j.mp3",
-    "https://files.catbox.moe/dtua60.mp3"
+    "https://files.catbox.moe/372kl0.mp3"
   ],
 
-  "🥵": [
-    "https://files.catbox.moe/l90704.mp3"
+  "😁": [
+    "https://files.catbox.moe/ef6me4.mp3"
   ],
 
-  "🙂": [
-    "https://files.catbox.moe/4oks08.mp3"
+  "🤣": [
+    "https://files.catbox.moe/ipihl6.mp3"
+  ],
+
+  "😆": [
+    "https://files.catbox.moe/r4unub.mp3"
+  ],
+
+  "😑": [
+    "https://files.catbox.moe/z1evci.mp3"
+  ],
+
+  "😅": [
+    "https://files.catbox.moe/7hvdo6.mp3"
+  ],
+
+  "😍": [
+    "https://files.catbox.moe/r13v24.mp3"
   ],
 
   "😒": [
-    "https://files.catbox.moe/mt5il0.mp3"
+    "https://files.catbox.moe/ww8yts.mp3"
   ],
 
-  "😓": [
-    "https://files.catbox.moe/zh3mdg.mp3"
+  "💋": [
+    "https://files.catbox.moe/hd0zfr.mp3"
   ],
 
-  "🤧": [
-    "https://files.catbox.moe/zh3mdg.mp3"
+  "😘": [
+    "https://files.catbox.moe/hd0zfr.mp3"
   ],
 
-  "🙄": [
-    "https://files.catbox.moe/vgzkeu.mp3"
+  "😡": [
+    "https://files.catbox.moe/b5y405.mp3"
+  ],
+
+  "🤬": [
+    "https://files.catbox.moe/b5y405.mp3"
+  ],
+
+  "😩": [
+    "https://files.catbox.moe/vb01zl.mp3"
+  ],
+
+  "😭": [
+    "https://files.catbox.moe/d9w35v.mp3"
+  ],
+
+  "🙂": [
+    "https://files.catbox.moe/flp9ed.mp3"
+  ],
+
+  "🙏": [
+    "https://files.catbox.moe/2aw07b.mp3"
+  ],
+
+  "😂": [
+    "https://files.catbox.moe/vknlt2.mp3"
+  ],
+
+  "🤭": [
+    "https://files.catbox.moe/5s606f.mp3"
+  ],
+
+  "🥰": [
+    "https://files.catbox.moe/1ojauw.mp3"
+  ],
+
+  "🥱": [
+    "https://files.catbox.moe/088yxs.mp3"
+  ],
+
+  "🥵": [
+    "https://files.catbox.moe/c0odmp.mp3"
+  ],
+
+  "🥺": [
+    "https://files.catbox.moe/458umf.mp3"
+  ],
+
+  "🥹": [
+    "https://files.catbox.moe/cj6ny7.mp3"
+  ],
+
+  "🫶": [
+    "https://files.catbox.moe/hyo82t.mp3"
+  ],
+
+  "🫣": [
+    "https://files.catbox.moe/2qjfwl.mp3"
+  ],
+
+  "🍼": [
+    "https://files.catbox.moe/gvrvkh.mp3"
+  ],
+
+  "👍": [
+    "https://files.catbox.moe/t24ebx.mp3"
   ]
 };
 
@@ -356,7 +299,7 @@ function getRandomVoice(key) {
 }
 
 // ═══════════════════════════════════════════════
-// 📋 LIST
+// 📋 VOICE LIST
 // ═══════════════════════════════════════════════
 
 const voiceList = `
@@ -369,9 +312,7 @@ const voiceList = `
 🎵 গান
 😴 ঘুমা
 🎙️ ভয়েস
-😸 😸
 😂 নাটেক
-🙏 🙏
 😶 এহ
 🗑️ ডিলেট
 🧠 matha betha
@@ -404,17 +345,15 @@ const voiceList = `
 
 😄 EMOJI VOICE
 
-🥱 😁 😌 🥺
-🤭 😅 😏 😞
-🤫 🍼 🤔 🥰
-🤦 😘 😑 😢
-🙊 🤨 😡 🤬
-🙈 😍 😭 😱
-😻 😿 💔 🤣
-🥹 🫣 🐸 💋
-🫦 😴 😼 🖕
-🥵 🙂 😒 😓
-🤧 🙄
+☺️ 😊 🌚 🌝
+🐸 👀 🖕 😁
+🤣 😆 😑 😅
+😍 😒 💋 😘
+😡 🤬 😩 😭
+🙂 🙏 😂 🤭
+🥰 🥱 🥵 🥺
+🥹 🫶 🫣 🍼
+👍
 
 ━━━━━━━━━━━━━━━━━━━━━━
 
@@ -439,7 +378,7 @@ module.exports.config = {
 
   name: "text_voice",
 
-  version: "4.0.0",
+  version: "5.0.0",
 
   hasPermssion: 0,
 
@@ -456,7 +395,7 @@ module.exports.config = {
     "Text / Emoji Auto Voice",
 
   longDescription:
-    "Text ও Emoji trigger অনুযায়ী random voice পাঠায়",
+    "Text ও Emoji trigger অনুযায়ী voice পাঠায়",
 
   commandCategory: "noprefix",
 
@@ -479,7 +418,7 @@ async function processVoice(api, event) {
 
   try {
 
-    if (!event) return;
+    if (!event || !api) return;
 
     const threadID = event.threadID;
     const messageID = event.messageID;
@@ -524,7 +463,7 @@ async function processVoice(api, event) {
     }
 
     // ═══════════════════════════════════════════
-    // 🎲 SELECT RANDOM URL
+    // 🎲 SELECT VOICE
     // ═══════════════════════════════════════════
 
     const audioUrl = getRandomVoice(key);
@@ -534,7 +473,7 @@ async function processVoice(api, event) {
     }
 
     // ═══════════════════════════════════════════
-    // 📁 CACHE
+    // 📁 CACHE DIRECTORY
     // ═══════════════════════════════════════════
 
     const cacheDir = path.join(
@@ -544,7 +483,8 @@ async function processVoice(api, event) {
 
     await fs.ensureDir(cacheDir);
 
-    const safeKey = encodeURIComponent(key);
+    const safeKey = encodeURIComponent(key)
+      .replace(/%/g, "_");
 
     const safeMessageID = String(
       messageID || Date.now()
@@ -559,7 +499,7 @@ async function processVoice(api, event) {
     );
 
     // ═══════════════════════════════════════════
-    // ⬇️ DOWNLOAD
+    // ⬇️ DOWNLOAD VOICE
     // ═══════════════════════════════════════════
 
     const response = await axios({
@@ -572,7 +512,10 @@ async function processVoice(api, event) {
 
       timeout: 30000,
 
-      maxRedirects: 5
+      maxRedirects: 5,
+
+      validateStatus: (status) =>
+        status >= 200 && status < 400
 
     });
 
@@ -592,7 +535,7 @@ async function processVoice(api, event) {
     });
 
     // ═══════════════════════════════════════════
-    // 🎙️ SEND ONCE
+    // 🎙️ SEND VOICE
     // ═══════════════════════════════════════════
 
     await new Promise((resolve, reject) => {
@@ -647,7 +590,7 @@ async function processVoice(api, event) {
   } catch (error) {
 
     console.error(
-      "[TEXT_VOICE]",
+      "[TEXT_VOICE ERROR]",
       error.message
     );
 
@@ -735,6 +678,7 @@ module.exports.run = async function ({
   const currentEvent = event || {
     threadID,
     senderID,
+    messageID: null,
     body: Array.isArray(args)
       ? args.join(" ")
       : String(args || "")
