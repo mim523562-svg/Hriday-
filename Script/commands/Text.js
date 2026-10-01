@@ -17,11 +17,11 @@ const path = require("path");
 
 const textAudioMap = {
 
-  "🎵": [
+  "🤖": [
     "https://files.catbox.moe/l0jhdq.mp3"
   ],
 
-  "ঘুমা": [
+  "🥱": [
     "https://files.catbox.moe/mofu8n.mp3"
   ],
 
@@ -29,7 +29,7 @@ const textAudioMap = {
     "https://files.catbox.moe/b973ms.mp4"
   ],
 
-  "নাটেক": [
+  "🤏": [
     "https://files.catbox.moe/8w1wo5.mp3"
   ],
 
@@ -41,7 +41,7 @@ const textAudioMap = {
     "https://files.catbox.moe/kcemka.mp4"
   ],
 
-  "matha betha": [
+  "🤦‍♂️": [
     "https://files.catbox.moe/5rdtc6.mp3"
   ],
 
@@ -49,7 +49,7 @@ const textAudioMap = {
     "https://files.catbox.moe/5rdtc6.mp3"
   ],
 
-  "মিম": [
+  "🫠": [
     "https://files.catbox.moe/dz7n65.mp3"
   ],
 
@@ -109,7 +109,7 @@ const textAudioMap = {
     "https://files.catbox.moe/yuonxq.mp3"
   ],
 
-  "gana": [
+  "🤨": [
     "https://files.catbox.moe/995anc.mp3"
   ],
 
@@ -254,7 +254,7 @@ const textAudioMap = {
   ],
 
   "👍": [
-    "https://files.catbox.moe/t24ebx.mp3"
+    "https://files.catbox.moe/mkvysb.mp3"
   ]
 };
 
