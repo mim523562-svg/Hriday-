@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
 
   <style>
@@ -15,36 +15,38 @@
 
     body {
       background: #080b18;
-      color: #fff;
-      min-height: 100vh;
+      color: #ffffff;
       padding-bottom: 80px;
     }
 
-    .topbar {
+    .header {
+      height: 65px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 18px 20px;
+      justify-content: space-between;
+      padding: 0 18px;
       background: #11152a;
-      border-bottom: 1px solid #262b46;
+      border-bottom: 1px solid #272d4b;
     }
 
-    .topbar h2 {
+    .header h2 {
       font-size: 20px;
     }
 
-    .profile {
+    .user-icon {
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, #12e3a1, #15a8ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #12dca5, #168df5);
       font-weight: bold;
     }
 
     .container {
-      width: min(100%, 950px);
+      width: 100%;
+      max-width: 1000px;
       margin: auto;
       padding: 18px;
     }
@@ -53,81 +55,85 @@
       margin-bottom: 18px;
     }
 
+    .welcome h3 {
+      font-size: 20px;
+    }
+
     .welcome p {
       color: #9da5c3;
       font-size: 14px;
-      margin-top: 5px;
+      margin-top: 6px;
     }
 
-    .stats-grid {
+    .stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
     }
 
     .card {
+      min-height: 120px;
+      padding: 17px;
       background: #15192e;
-      border: 1px solid #252b48;
+      border: 1px solid #282e4d;
       border-radius: 14px;
-      padding: 18px;
-      min-height: 105px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
     }
 
-    .card .icon {
+    .card .emoji {
       font-size: 25px;
       margin-bottom: 10px;
     }
 
-    .card h3 {
+    .card h2 {
       font-size: 24px;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
 
     .card p {
-      color: #929ab8;
+      color: #969fbd;
       font-size: 13px;
     }
 
-    .wide-card {
+    .big-card {
       grid-column: span 2;
     }
 
     .panel {
       margin-top: 18px;
-      background: #15192e;
-      border: 1px solid #252b48;
-      border-radius: 14px;
       padding: 18px;
+      background: #15192e;
+      border: 1px solid #282e4d;
+      border-radius: 14px;
     }
 
-    .panel-header {
+    .panel-title {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      justify-content: space-between;
+      margin-bottom: 15px;
     }
 
-    .panel-header h3 {
-      font-size: 16px;
+    .panel-title h3 {
+      font-size: 17px;
     }
 
-    .status {
-      padding: 6px 10px;
-      background: #163d35;
-      color: #32e6a5;
+    .live {
+      color: #38e6a7;
+      background: #12392f;
+      padding: 6px 11px;
       border-radius: 20px;
       font-size: 12px;
     }
 
-    .notice {
-      background: #102e2a;
-      border: 1px solid #1f6958;
-      color: #74f2be;
-      padding: 12px;
+    .message {
+      color: #7af3be;
+      background: #10322c;
+      border: 1px solid #23725e;
       border-radius: 8px;
+      padding: 12px;
       font-size: 13px;
-      margin-bottom: 15px;
+      margin-bottom: 18px;
     }
 
     .chart {
@@ -135,22 +141,16 @@
       display: flex;
       align-items: end;
       justify-content: space-around;
-      gap: 12px;
-      padding: 15px 8px 0;
+      gap: 10px;
       border-bottom: 1px solid #303653;
+      padding: 20px 5px 0;
     }
 
     .bar {
       width: 10%;
-      border-radius: 8px 8px 0 0;
-      background: linear-gradient(to top, #20c997, #25d9eb);
       position: relative;
-      transition: .3s;
-    }
-
-    .bar:hover {
-      opacity: .75;
-      transform: scaleY(1.04);
+      border-radius: 7px 7px 0 0;
+      background: linear-gradient(to top, #16bd91, #27dce9);
     }
 
     .bar span {
@@ -158,87 +158,85 @@
       top: -22px;
       left: 50%;
       transform: translateX(-50%);
+      color: #aeb8d5;
       font-size: 11px;
-      color: #b7c0dc;
     }
 
-    .actions {
+    .buttons {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 10px;
       margin-top: 18px;
     }
 
-    .action-btn {
+    button {
       border: none;
+      border-radius: 8px;
+      padding: 13px 8px;
       color: white;
-      padding: 13px;
-      border-radius: 9px;
-      background: #242b4a;
+      background: #252c4b;
       cursor: pointer;
-      font-size: 14px;
-      transition: .3s;
+      font-size: 13px;
     }
 
-    .action-btn:hover {
-      background: #00bfa6;
+    button:hover {
+      background: #00b99b;
     }
 
-    .bottom-nav {
+    .bottom-menu {
       position: fixed;
       left: 0;
       right: 0;
       bottom: 0;
-      height: 68px;
+      height: 70px;
       display: flex;
       justify-content: space-around;
       align-items: center;
       background: #11152a;
-      border-top: 1px solid #282e4b;
-      z-index: 10;
+      border-top: 1px solid #282e4d;
     }
 
-    .nav-item {
+    .menu-item {
+      color: #929bb9;
       text-align: center;
-      color: #8f98b8;
-      font-size: 12px;
       cursor: pointer;
+      font-size: 12px;
     }
 
-    .nav-item div {
+    .menu-item div {
       font-size: 21px;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
 
-    .nav-item.active {
-      color: #27dcb1;
+    .menu-item.active {
+      color: #2ce0ad;
     }
 
     @media (max-width: 700px) {
-      .stats-grid {
+      .stats {
         grid-template-columns: repeat(2, 1fr);
       }
 
-      .wide-card {
+      .big-card {
         grid-column: span 2;
       }
     }
 
-    @media (max-width: 420px) {
+    @media (max-width: 430px) {
       .container {
         padding: 12px;
       }
 
       .card {
+        min-height: 105px;
         padding: 14px;
-        min-height: 95px;
       }
 
-      .card h3 {
+      .card h2 {
         font-size: 20px;
       }
 
-      .actions {
+      .buttons {
         grid-template-columns: 1fr;
       }
     }
@@ -247,71 +245,71 @@
 
 <body>
 
-  <header class="topbar">
+  <header class="header">
     <h2>📊 Admin Panel</h2>
-    <div class="profile">A</div>
+    <div class="user-icon">A</div>
   </header>
 
   <main class="container">
 
-    <div class="welcome">
+    <section class="welcome">
       <h3>স্বাগতম, Admin 👋</h3>
-      <p>আপনার ড্যাশবোর্ডের সারসংক্ষেপ</p>
-    </div>
+      <p>আপনার ড্যাশবোর্ডের সম্পূর্ণ তথ্য এখানে দেখুন</p>
+    </section>
 
-    <section class="stats-grid">
+    <section class="stats">
 
       <div class="card">
-        <div class="icon">👥</div>
-        <h3 id="users">190</h3>
+        <div class="emoji">👥</div>
+        <h2 id="users">190</h2>
         <p>মোট ইউজার</p>
       </div>
 
       <div class="card">
-        <div class="icon">⏱️</div>
-        <h3>14h 48m</h3>
+        <div class="emoji">⏱️</div>
+        <h2>14h 48m</h2>
         <p>Active Time</p>
       </div>
 
       <div class="card">
-        <div class="icon">📦</div>
-        <h3 id="orders">15,655</h3>
+        <div class="emoji">📦</div>
+        <h2>15,655</h2>
         <p>মোট অর্ডার</p>
       </div>
 
       <div class="card">
-        <div class="icon">🚀</div>
-        <h3>711</h3>
+        <div class="emoji">🚀</div>
+        <h2>711</h2>
         <p>সফল কাজ</p>
       </div>
 
       <div class="card">
-        <div class="icon">💥</div>
-        <h3>577</h3>
+        <div class="emoji">💥</div>
+        <h2>577</h2>
         <p>আজকের ভিজিটর</p>
       </div>
 
       <div class="card">
-        <div class="icon">⏳</div>
-        <h3>171h 21m</h3>
+        <div class="emoji">⏳</div>
+        <h2>171h 21m</h2>
         <p>মোট সময়</p>
       </div>
 
-      <div class="card wide-card">
-        <div class="icon">📈</div>
-        <h3>24.14%</h3>
+      <div class="card big-card">
+        <div class="emoji">📈</div>
+        <h2>24.14%</h2>
         <p>Conversion Rate</p>
       </div>
 
     </section>
 
     <section class="panel">
-      <div class="panel-header">
+      <div class="panel-title">
         <h3>📊 Weekly Statistics</h3>
-        <span class="status">Live</span>
+        <span class="live">● Live</span>
       </div>
 
-      <div class="notice">
+      <div class="message">
         ✅ আপনার ড্যাশবোর্ড সফলভাবে চালু আছে
       </div>
 
@@ -325,37 +323,37 @@
         <div class="bar" style="height: 75%;"><span>75</span></div>
       </div>
 
-      <div class="actions">
-        <button class="action-btn" onclick="addUser()">➕ ইউজার যোগ করুন</button>
-        <button class="action-btn" onclick="showMessage()">🔔 নোটিফিকেশন</button>
-        <button class="action-btn" onclick="resetData()">🔄 ডাটা রিফ্রেশ</button>
+      <div class="buttons">
+        <button onclick="addUser()">➕ ইউজার যোগ করুন</button>
+        <button onclick="notification()">🔔 নোটিফিকেশন</button>
+        <button onclick="refreshPage()">🔄 ডাটা রিফ্রেশ</button>
       </div>
     </section>
 
   </main>
 
-  <nav class="bottom-nav">
-    <div class="nav-item active">
+  <nav class="bottom-menu">
+    <div class="menu-item active">
       <div>🏠</div>
       হোম
     </div>
 
-    <div class="nav-item">
+    <div class="menu-item">
       <div>📊</div>
       রিপোর্ট
     </div>
 
-    <div class="nav-item">
+    <div class="menu-item">
       <div>📋</div>
       অর্ডার
     </div>
 
-    <div class="nav-item">
+    <div class="menu-item">
       <div>📁</div>
       ফাইল
     </div>
 
-    <div class="nav-item">
+    <div class="menu-item">
       <div>⚙️</div>
       সেটিংস
     </div>
@@ -363,27 +361,30 @@
 
   <script>
     function addUser() {
-      const userElement = document.getElementById("users");
-      let currentUsers = parseInt(userElement.innerText);
-      userElement.innerText = currentUsers + 1;
+      const userBox = document.getElementById("users");
+      let users = Number(userBox.innerText);
+      userBox.innerText = users + 1;
       alert("নতুন ইউজার যোগ হয়েছে!");
     }
 
-    function showMessage() {
+    function notification() {
       alert("আপনার কোনো নতুন নোটিফিকেশন নেই।");
     }
 
-    function resetData() {
-      alert("ডাটা সফলভাবে রিফ্রেশ হয়েছে!");
+    function refreshPage() {
+      alert("ডাটা রিফ্রেশ হয়েছে!");
       location.reload();
     }
 
-    document.querySelectorAll(".nav-item").forEach(item => {
-      item.addEventListener("click", function () {
-        document.querySelectorAll(".nav-item")
-          .forEach(nav => nav.classList.remove("active"));
+    const menuItems = document.querySelectorAll(".menu-item");
 
-        this.classList.add("active");
+    menuItems.forEach(function(item) {
+      item.addEventListener("click", function() {
+        menuItems.forEach(function(menu) {
+          menu.classList.remove("active");
+        });
+
+        item.classList.add("active");
       });
     });
   </script>
