@@ -1,54 +1,49 @@
 module.exports.config = {
     name: "hack",
     aliases: ["idhack", "hacked"],
-    version: "2.0.0",
+    version: "4.0.0",
     hasPermssion: 0,
-    credits: "SHAHADAT SAHU",
-    description: "Create a fun fake hacker style image using user's profile picture",
+    credits: "HRIDAY HASAN SHANTO",
+    description: "Fake hack profile info + video",
     commandCategory: "fun",
     usages: "reply or mention",
-    cooldowns: 10,
+    cooldowns: 5,
     usePrefix: true,
+
     dependencies: {
-        "canvas": "",
-        "fs-extra": "",
-        "axios": ""
+        "axios": "",
+        "fs-extra": ""
     }
 };
 
-module.exports.wrapText = function(ctx, text, maxWidth) {
-    const words = text.split(" ");
-    const lines = [];
-    let line = "";
+const axios = require("axios");
+const fs = require("fs-extra");
+const path = require("path");
 
-    for (const word of words) {
-        const testLine = line ? `${line} ${word}` : word;
+const VIDEO_URL =
+    "https://files.catbox.moe/rshvjk.mp4";
 
-        if (ctx.measureText(testLine).width <= maxWidth) {
-            line = testLine;
-        } else {
-            if (line) lines.push(line);
-            line = word;
-        }
-    }
+module.exports.run = async function ({ api, event }) {
 
-    if (line) lines.push(line);
+    const cacheDir = path.join(__dirname, "cache");
 
-    return lines;
-};
+    await fs.ensureDir(cacheDir);
 
-module.exports.run = async function({ api, event }) {
-    const { loadImage, createCanvas } = require("canvas");
-    const fs = global.nodemodule["fs-extra"];
-    const axios = global.nodemodule.axios;
+    const id = `${event.senderID}_${Date.now()}`;
 
-    const cacheDir = __dirname + "/cache";
+    const avatarPath =
+        path.join(cacheDir, `hack_avatar_${id}.jpg`);
 
-    const bgPath = cacheDir + `/hack_${event.senderID}.png`;
-    const avatarPath = cacheDir + `/avatar_${event.senderID}.png`;
+    const videoPath =
+        path.join(cacheDir, `hack_video_${id}.mp4`);
 
     try {
-        fs.ensureDirSync(cacheDir);
+
+        /*
+         * =========================
+         * FIND TARGET UID
+         * =========================
+         */
 
         let targetID;
 
@@ -57,133 +52,340 @@ module.exports.run = async function({ api, event }) {
             event.messageReply &&
             event.messageReply.senderID
         ) {
-            targetID = event.messageReply.senderID;
-        } else if (event.mentions && Object.keys(event.mentions).length > 0) {
-            targetID = Object.keys(event.mentions)[0];
+
+            targetID =
+                event.messageReply.senderID;
+
+        } else if (
+            event.mentions &&
+            Object.keys(event.mentions).length > 0
+        ) {
+
+            targetID =
+                Object.keys(event.mentions)[0];
+
         } else {
-            targetID = event.senderID;
+
+            targetID =
+                event.senderID;
         }
 
-        
-        const userInfo = await api.getUserInfo(targetID);
-        const name =
-            userInfo &&
-            userInfo[targetID] &&
-            userInfo[targetID].name
-                ? userInfo[targetID].name
-                : "Unknown User";
+        /*
+         * =========================
+         * GET USER INFO
+         * =========================
+         */
 
-        
-        const backgroundUrl =
-            "https://drive.google.com/uc?id=1RwJnJTzUmwOmP3N_mZzxtp63wbvt9bLZ";
+        let name = "Unknown User";
+        let userInfo = {};
 
-        
-        const avatarUrl =
-            `https://graph.facebook.com/${targetID}/picture` +
-            `?width=720&height=720` +
-            `&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`;
+        try {
 
-        const [avatarResponse, backgroundResponse] = await Promise.all([
-            axios.get(avatarUrl, {
-                responseType: "arraybuffer",
-                timeout: 20000
-            }),
-            axios.get(backgroundUrl, {
-                responseType: "arraybuffer",
-                timeout: 20000
-            })
-        ]);
+            userInfo =
+                await api.getUserInfo(targetID);
 
-        fs.writeFileSync(
-            avatarPath,
-            Buffer.from(avatarResponse.data)
-        );
+            if (
+                userInfo &&
+                userInfo[targetID]
+            ) {
 
-        fs.writeFileSync(
-            bgPath,
-            Buffer.from(backgroundResponse.data)
-        );
+                name =
+                    userInfo[targetID].name ||
+                    "Unknown User";
+            }
 
-        const background = await loadImage(bgPath);
-        const avatar = await loadImage(avatarPath);
+        } catch (e) {
 
-        const canvas = createCanvas(
-            background.width,
-            background.height
-        );
-
-        const ctx = canvas.getContext("2d");
-
-        
-        ctx.drawImage(
-            background,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-        
-        ctx.font = "400 23px Arial";
-        ctx.fillStyle = "#1878F3";
-        ctx.textAlign = "start";
-
-        const lines = this.wrapText(ctx, name, 1160);
-
-        const lineHeight = 28;
-
-        lines.forEach((line, index) => {
-            ctx.fillText(
-                line,
-                200,
-                497 + index * lineHeight
+            console.log(
+                "[HACK] getUserInfo:",
+                e.message
             );
-        });
-
-    
-        ctx.drawImage(
-            avatar,
-            83,
-            437,
-            100,
-            101
-        );
-
-        
-        const imageBuffer = canvas.toBuffer("image/png");
-
-        fs.writeFileSync(bgPath, imageBuffer);
-
-        
-        if (fs.existsSync(avatarPath)) {
-            fs.unlinkSync(avatarPath);
         }
 
-        return api.sendMessage(
-            {
-                body: "তোর আইডিটা হ্যাক করা হলো 😽✔️",
-                attachment: fs.createReadStream(bgPath)
-            },
-            event.threadID,
-            () => {
-                if (fs.existsSync(bgPath)) {
-                    fs.unlinkSync(bgPath);
+        /*
+         * =========================
+         * PROFILE PICTURE URL
+         * =========================
+         */
+
+        let avatarUrl = null;
+
+        /*
+         * Try information returned
+         * by getUserInfo()
+         */
+
+        if (
+            userInfo &&
+            userInfo[targetID]
+        ) {
+
+            const profile =
+                userInfo[targetID];
+
+            avatarUrl =
+                profile.thumbSrc ||
+                profile.profileUrl ||
+                profile.avatar ||
+                profile.picture ||
+                profile.photo ||
+                null;
+        }
+
+        /*
+         * Fallback Facebook URL
+         */
+
+        if (!avatarUrl) {
+
+            avatarUrl =
+                `https://graph.facebook.com/${targetID}/picture` +
+                `?width=720&height=720`;
+        }
+
+        /*
+         * =========================
+         * DOWNLOAD PROFILE PICTURE
+         * =========================
+         */
+
+        let avatarOK = false;
+
+        try {
+
+            const avatarResponse =
+                await axios.get(
+                    avatarUrl,
+                    {
+                        responseType:
+                            "arraybuffer",
+                        timeout: 30000,
+                        maxRedirects: 5
+                    }
+                );
+
+            const contentType =
+                String(
+                    avatarResponse.headers[
+                        "content-type"
+                    ] || ""
+                );
+
+            /*
+             * Make sure response
+             * is actually an image
+             */
+
+            if (
+                contentType.startsWith("image/")
+            ) {
+
+                await fs.writeFile(
+                    avatarPath,
+                    Buffer.from(
+                        avatarResponse.data
+                    )
+                );
+
+                avatarOK = true;
+            }
+
+        } catch (e) {
+
+            console.log(
+                "[HACK] Avatar download failed:",
+                e.message
+            );
+        }
+
+        /*
+         * =========================
+         * DOWNLOAD VIDEO
+         * =========================
+         */
+
+        const videoResponse =
+            await axios.get(
+                VIDEO_URL,
+                {
+                    responseType:
+                        "arraybuffer",
+                    timeout: 60000,
+                    maxRedirects: 5
                 }
-            },
-            event.messageID
+            );
+
+        await fs.writeFile(
+            videoPath,
+            Buffer.from(
+                videoResponse.data
+            )
         );
+
+        /*
+         * =========================
+         * PROFILE CAPTION
+         * =========================
+         */
+
+        const caption =
+            "╭━━━━━━━━━━━━━━━━━━╮\n" +
+            "   🩸 𝐇𝐀𝐂𝐊 𝐓𝐀𝐑𝐆𝐄𝐓 🩸\n" +
+            "╰━━━━━━━━━━━━━━━━━━╯\n\n" +
+
+            "👤 𝐍𝐚𝐦𝐞: " +
+            name +
+            "\n\n" +
+
+            "🆔 𝐔𝐈𝐃: " +
+            targetID +
+            "\n\n" +
+
+            "🖼️ 𝐏𝐫𝐨𝐟𝐢𝐥𝐞: " +
+            (avatarOK
+                ? "Found ✔️"
+                : "Unavailable") +
+            "\n\n" +
+
+            "🔐 𝐒𝐭𝐚𝐭𝐮𝐬: 𝐀𝐜𝐜𝐞𝐬𝐬𝐞𝐝 ✔️\n" +
+            "\n\n" +
+
+            "☠️" +
+            "💀";
+
+        /*
+         * =========================
+         * SEND PROFILE + VIDEO
+         * =========================
+         */
+
+        if (avatarOK) {
+
+            await api.sendMessage(
+                {
+                    body: caption,
+                    attachment:
+                        fs.createReadStream(
+                            avatarPath
+                        )
+                },
+                event.threadID
+            );
+
+        } else {
+
+            await api.sendMessage(
+                {
+                    body: caption
+                },
+                event.threadID
+            );
+        }
+
+        /*
+         * =========================
+         * SEND VIDEO
+         * =========================
+         */
+
+        await api.sendMessage(
+            {
+                body:
+                    "╭━━━━━━━━━━━━━━━━━━╮\n" +
+                    "     💻 𝐇𝐀𝐂𝐊 𝐂𝐎𝐌𝐏𝐋𝐄𝐓𝐄 ✔️\n" +
+                    "╰━━━━━━━━━━━━━━━━━━╯\n\n" +
+
+                    "👤 Target: " +
+                    name +
+                    "\n" +
+
+                    "🆔 UID: " +
+                    targetID +
+                    "\n\n" +
+
+                    "💀" +
+
+                    "☠️",
+
+                attachment:
+                    fs.createReadStream(
+                        videoPath
+                    )
+            },
+            event.threadID
+        );
+
+        /*
+         * =========================
+         * CLEANUP
+         * =========================
+         */
+
+        setTimeout(async () => {
+
+            try {
+
+                if (
+                    await fs.pathExists(
+                        avatarPath
+                    )
+                ) {
+                    await fs.remove(
+                        avatarPath
+                    );
+                }
+
+                if (
+                    await fs.pathExists(
+                        videoPath
+                    )
+                ) {
+                    await fs.remove(
+                        videoPath
+                    );
+                }
+
+            } catch (e) {}
+
+        }, 10000);
 
     } catch (error) {
-        console.error("[HACK CMD ERROR]", error);
 
-    
+        console.error(
+            "[HACK COMMAND ERROR]",
+            error
+        );
+
+        /*
+         * Cleanup
+         */
+
         try {
-            if (fs.existsSync(avatarPath)) fs.unlinkSync(avatarPath);
-            if (fs.existsSync(bgPath)) fs.unlinkSync(bgPath);
+
+            if (
+                await fs.pathExists(
+                    avatarPath
+                )
+            ) {
+                await fs.remove(
+                    avatarPath
+                );
+            }
+
+            if (
+                await fs.pathExists(
+                    videoPath
+                )
+            ) {
+                await fs.remove(
+                    videoPath
+                );
+            }
+
         } catch (e) {}
 
         return api.sendMessage(
-            "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+            "❌ Hack command চালাতে সমস্যা হয়েছে।",
             event.threadID,
             event.messageID
         );
