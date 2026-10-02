@@ -16,13 +16,12 @@
     "EMAIL": "",
     "PASSWORD": "",
     "OTPKEY": "",
-    "USERAGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6.2 Safari/605.1.15",
-    "_notes_EMAIL_PASSWORD": "Only used as a fallback if appstate.json is missing/invalid. Goes through includes/fca/botacc.js, a heavily obfuscated third-party module - see chat notes. Leave EMAIL/PASSWORD empty and use appstate.json instead unless you've accepted that risk.",
+    "USERAGENT": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "_notes_EMAIL_PASSWORD": "Only used as a fallback if appstate.json is missing/invalid. Leave empty and use appstate.json.",
     "e2ee": {
-        "enable": true,
-        "saveType": "memory",
-        "devicePath": "database/e2ee-device.json",
-        "_notes": "End-to-end encryption (E2EE / Labyrinth) for Messenger. Requires stfca (from Goat bot) as the active FCA provider - has no effect on the rx-fca fallback. saveType: 'memory' (lost on restart) or 'path' (persisted to devicePath)."
+        "enable": false,
+        "saveType": "path",
+        "devicePath": "database/e2ee-device.json"
     },
     "twoIdMode": {
         "enable": false,
@@ -32,16 +31,13 @@
             "password": "",
             "twoFactorCode": "",
             "userAgent": ""
-        },
-        "_notes": "Two-account mode, used by the 'accountswitch' command (Goat bot). Primary account = your normal EMAIL/PASSWORD + appstate.json. Fill secondaryAccount here if you want a second account to auto-switch to on MQTT errors (autoSwitchOnError)."
+        }
     },
     "BOTNAME": "মি্ঁম্ঁ ই্ঁস্ঁলা্ঁম্ঁ 🐥✳️",
     "Xrahat_Name": "Šħẫňto Hřiȡẫy Ħẫššẫň",
-    "Xrahat_resend": true,
+    "Xrahat_resend": false,
     "PREFIX": ",",
     "ADMINBOT": [
-        "61593296285457",
-        "61593296285457",
         "61593296285457"
     ],
     "NDH": [
@@ -54,12 +50,12 @@
     },
     "APPSTATEPATH": "appstate.json",
     "FCAOption": {
-        "forceLogin": true,
+        "forceLogin": false,
         "listenEvents": true,
         "pauseLog": true,
         "logLevel": "error",
         "selfListen": false,
-        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1"
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     },
     "version": "1.2.14",
     "caesar": {
