@@ -1,8 +1,8 @@
 /**
  * ╔══════════════════════════════════════════════╗
- * ║             🐥 BABYLOVE BOT                ║
- * ║      Voice + Song + RX API + Menu          ║
- * ║      Developer: হৃদয় হাসান শান্ত           ║
+ * ║             🐥 BABYLOVE BOT                 ║
+ * ║      Voice + Song + RX API + Menu           ║
+ * ║      Developer: হৃদয় হাসান শান্ত            ║
  * ╚══════════════════════════════════════════════╝
  */
 
@@ -19,7 +19,8 @@ const API_JSON_URL =
 
 const MARKER = "\u200B";
 
-const songProgress = {};
+// প্রতি thread-এর song progress
+const songProgress = Object.create(null);
 
 // ═══════════════════════════════════════════════
 // COMMAND CONFIG
@@ -27,19 +28,18 @@ const songProgress = {};
 
 module.exports.config = {
   name: "babylove",
-  version: "2.1.0",
+  version: "2.2.0",
   hasPermssion: 0,
   credits: "হৃদয় হাসান শান্ত",
-  description:
-    "BabyLove voice, song, RX API and automatic menu system",
+  description: "BabyLove voice, song, RX API and automatic menu system",
   commandCategory: "auto",
-  usages: "Baby",
+  usages: "🐥",
   cooldowns: 0,
   prefix: false
 };
 
 // ═══════════════════════════════════════════════
-// VOICE TRIGGERS
+// 🎤 VOICE TRIGGERS
 // ═══════════════════════════════════════════════
 
 const triggers = [
@@ -86,7 +86,8 @@ const triggers = [
   },
 
   {
-    keywords: ["mari gan", "mari vabi gan"],
+    // এখানে আগের syntax error ঠিক করা হয়েছে
+    keywords: ["mim gan", "ভাতিজা ভাবি গান"],
     audioUrl: "https://files.catbox.moe/vw58fi.mp3",
     reply: "",
     fileName: "mariasong.mp3"
@@ -109,19 +110,19 @@ const triggers = [
   {
     keywords: ["amr girlfriend"],
     audioUrl: "https://files.catbox.moe/v395oa.mp3",
-    reply: "Oow 🫡🎀",
+    reply: "🫡🎀",
     fileName: "gfkoliza.mp3"
   }
 ];
 
 // ═══════════════════════════════════════════════
-// SONG LIST
+// 🎵 SONG LIST
 // ═══════════════════════════════════════════════
 
 const deepSongs = [
   {
     url: "https://files.catbox.moe/uodwqm.mp3",
-    title: "🎵 Ei ta tmr jonno"
+    title: "🎵"
   },
 
   {
@@ -136,7 +137,7 @@ const deepSongs = [
 
   {
     url: "https://files.catbox.moe/5m6t42.mp3",
-    title: "🔥 Created by rX"
+    title: "🔥"
   },
 
   {
@@ -164,7 +165,7 @@ function withMarker(text = "") {
 }
 
 // ═══════════════════════════════════════════════
-// TYPING SYSTEM
+// ⌨️ TYPING SYSTEM
 // ═══════════════════════════════════════════════
 
 async function sendTyping(api, threadID, duration = 2000) {
@@ -182,13 +183,13 @@ async function sendTyping(api, threadID, duration = 2000) {
     }
 
     if (typeof api.sendTypingIndicator === "function") {
-      api.sendTypingIndicator(threadID, true);
+      await api.sendTypingIndicator(threadID, true);
 
       await new Promise(resolve =>
         setTimeout(resolve, duration)
       );
 
-      api.sendTypingIndicator(threadID, false);
+      await api.sendTypingIndicator(threadID, false);
     }
   } catch (error) {
     console.log(
@@ -199,7 +200,7 @@ async function sendTyping(api, threadID, duration = 2000) {
 }
 
 // ═══════════════════════════════════════════════
-// RX API
+// 🤖 GET RX API
 // ═══════════════════════════════════════════════
 
 async function getRxAPI() {
@@ -208,7 +209,7 @@ async function getRxAPI() {
       timeout: 10000
     });
 
-    if (!res.data?.voice) {
+    if (!res.data || !res.data.voice) {
       throw new Error("voice API not found");
     }
 
@@ -232,24 +233,25 @@ async function getRxAPI() {
 }
 
 // ═══════════════════════════════════════════════
-// DOWNLOAD FILE
+// 📥 DOWNLOAD FILE
 // ═══════════════════════════════════════════════
 
 async function downloadFile(url, filePath) {
-  const res = await axios.get(url, {
+  const response = await axios.get(url, {
     responseType: "arraybuffer",
     timeout: 30000,
-    maxContentLength: 50 * 1024 * 1024
+    maxContentLength: 50 * 1024 * 1024,
+    maxBodyLength: 50 * 1024 * 1024
   });
 
   fs.writeFileSync(
     filePath,
-    Buffer.from(res.data)
+    Buffer.from(response.data)
   );
 }
 
 // ═══════════════════════════════════════════════
-// DELETE FILE
+// 🗑️ DELETE FILE
 // ═══════════════════════════════════════════════
 
 function deleteFile(filePath) {
@@ -301,15 +303,16 @@ function getBabyMenu() {
 ┃
 ┃ 🤖 RX AI VOICE
 ┃ ─────────────────
-┃ • Baby voice message-এ
-┃   reply করলে AI response
-┃   automatically আসবে।
+┃ • Baby message-এ reply
+┃   করলে AI response আসবে।
 ┃
 ┃ 💡 EXAMPLE
 ┃ ─────────────────
 ┃ • Baby
+┃ • 🐥
 ┃ • ghumabo
 ┃ • ringtone
+┃ • mim gan
 ┃ • ekta gan bolo
 ┃ • next
 ┃
@@ -321,14 +324,12 @@ function getBabyMenu() {
 }
 
 // ═══════════════════════════════════════════════
-// SEND VOICE
+// 🎤 SEND VOICE
 // ═══════════════════════════════════════════════
 
 async function sendVoice(api, event, trigger) {
-  const {
-    threadID,
-    messageID
-  } = event;
+  const threadID = event.threadID;
+  const messageID = event.messageID;
 
   const filePath = path.join(
     __dirname,
@@ -371,7 +372,7 @@ async function sendVoice(api, event, trigger) {
 }
 
 // ═══════════════════════════════════════════════
-// SEND SONG
+// 🎵 SEND SONG
 // ═══════════════════════════════════════════════
 
 async function sendSong(
@@ -380,7 +381,9 @@ async function sendSong(
   index,
   replyToID
 ) {
-  if (!deepSongs.length) return;
+  if (!deepSongs.length) {
+    return;
+  }
 
   index =
     ((index % deepSongs.length) +
@@ -415,7 +418,7 @@ async function sendSong(
             return;
           }
 
-          if (info?.messageID) {
+          if (info && info.messageID) {
             songProgress[threadID] = {
               index,
               msgID: info.messageID
@@ -438,7 +441,7 @@ async function sendSong(
 }
 
 // ═══════════════════════════════════════════════
-// RX AI REPLY
+// 🤖 RX AI REPLY
 // ═══════════════════════════════════════════════
 
 async function handleRxReply(
@@ -446,27 +449,40 @@ async function handleRxReply(
   event,
   Users
 ) {
-  const {
-    threadID,
-    messageID,
-    senderID
-  } = event;
+  const threadID = event.threadID;
+  const messageID = event.messageID;
+  const senderID = event.senderID;
 
   const text = String(
     event.body || ""
   ).trim();
 
-  if (!text) return;
+  if (!text) {
+    return;
+  }
 
-  const name =
-    (await Users.getNameUser(senderID)) ||
-    "User";
+  let name = "User";
+
+  try {
+    if (
+      Users &&
+      typeof Users.getNameUser === "function"
+    ) {
+      name =
+        (await Users.getNameUser(senderID)) ||
+        "User";
+    }
+  } catch (error) {
+    name = "User";
+  }
 
   const rxAPI = await getRxAPI();
 
   if (!rxAPI) {
     return api.sendMessage(
-      "❌ Voice API এখন পাওয়া যাচ্ছে না।",
+      withMarker(
+        "❌ Voice API এখন পাওয়া যাচ্ছে না।"
+      ),
       threadID,
       messageID
     );
@@ -479,27 +495,37 @@ async function handleRxReply(
   );
 
   try {
-    const res = await axios.get(
+    const response = await axios.get(
       rxAPI,
       {
         params: {
-          text,
+          text: text,
           senderName: name
         },
         timeout: 30000
       }
     );
 
-    let replies = res.data?.response;
+    let replies =
+      response.data &&
+      response.data.response;
 
-    if (!replies) return;
+    if (!replies) {
+      return;
+    }
 
     if (!Array.isArray(replies)) {
       replies = [replies];
     }
 
     for (const reply of replies) {
-      if (!reply) continue;
+      if (
+        reply === null ||
+        reply === undefined ||
+        String(reply).trim() === ""
+      ) {
+        continue;
+      }
 
       await new Promise(resolve => {
         api.sendMessage(
@@ -519,7 +545,34 @@ async function handleRxReply(
 }
 
 // ═══════════════════════════════════════════════
-// EVENT HANDLER
+// 🔎 CHECK BOT MESSAGE
+// ═══════════════════════════════════════════════
+
+function isBotMessage(api, messageReply) {
+  try {
+    if (!messageReply) {
+      return false;
+    }
+
+    if (
+      typeof api.getCurrentUserID !== "function"
+    ) {
+      return false;
+    }
+
+    return (
+      messageReply.senderID ===
+        api.getCurrentUserID() &&
+      typeof messageReply.body === "string" &&
+      messageReply.body.includes(MARKER)
+    );
+  } catch (error) {
+    return false;
+  }
+}
+
+// ═══════════════════════════════════════════════
+// 🚀 EVENT HANDLER
 // ═══════════════════════════════════════════════
 
 module.exports.handleEvent = async function ({
@@ -528,21 +581,27 @@ module.exports.handleEvent = async function ({
   Users
 }) {
   try {
+    if (!event) {
+      return;
+    }
+
     const body = event.body;
 
-    if (!body) return;
+    if (!body) {
+      return;
+    }
 
     const msg = String(body)
       .trim()
       .toLowerCase();
 
-    if (!msg) return;
+    if (!msg) {
+      return;
+    }
 
-    const {
-      threadID,
-      messageID,
-      messageReply
-    } = event;
+    const threadID = event.threadID;
+    const messageID = event.messageID;
+    const messageReply = event.messageReply;
 
     // ═══════════════════════════════════════════
     // 🐥 BABY MENU
@@ -551,10 +610,11 @@ module.exports.handleEvent = async function ({
     if (
       msg === "🎀🧸" ||
       msg === "baby🐥" ||
+      msg === "baby 🐥" ||
       msg === "🐥"
     ) {
       return api.sendMessage(
-        getBabyMenu(),
+        withMarker(getBabyMenu()),
         threadID,
         messageID
       );
@@ -566,10 +626,7 @@ module.exports.handleEvent = async function ({
 
     if (
       messageReply &&
-      messageReply.senderID ===
-        api.getCurrentUserID() &&
-      typeof messageReply.body === "string" &&
-      messageReply.body.includes(MARKER)
+      isBotMessage(api, messageReply)
     ) {
       await handleRxReply(
         api,
@@ -589,7 +646,8 @@ module.exports.handleEvent = async function ({
       ["next", "arekta"].includes(msg)
     ) {
       const repliedID =
-        messageReply?.messageID;
+        messageReply &&
+        messageReply.messageID;
 
       const progress =
         songProgress[threadID];
@@ -627,13 +685,18 @@ module.exports.handleEvent = async function ({
 
     for (const trigger of triggers) {
       const matched =
-        trigger.keywords.some(keyword =>
-          msg.includes(
-            String(keyword).toLowerCase()
-          )
-        );
+        trigger.keywords.some(keyword => {
+          const key =
+            String(keyword)
+              .trim()
+              .toLowerCase();
 
-      if (!matched) continue;
+          return key && msg.includes(key);
+        });
+
+      if (!matched) {
+        continue;
+      }
 
       await sendTyping(
         api,
@@ -655,7 +718,8 @@ module.exports.handleEvent = async function ({
     // ═══════════════════════════════════════════
 
     if (
-      msg.includes("ekta gan bolo")
+      msg.includes("ekta gan bolo") ||
+      msg.includes("একটা গান বলো")
     ) {
       await sendTyping(
         api,
