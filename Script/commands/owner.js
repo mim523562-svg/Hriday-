@@ -3,9 +3,9 @@ const fs = require("fs-extra");
 
 module.exports.config = {
   name: "owner",
-  version: "1.0.1",
+  version: "2.0.0",
   hasPermssion: 0,
-  credits: "🔰𝐑𝐀𝐇𝐀𝐓 𝐈𝐒𝐋𝐀𝐌🔰",
+  credits: "Šħẫňto Hřiȡẫy Ħẫššẫň",
   description: "Show Owner Info with styled box & random photo",
   commandCategory: "Information",
   usages: "owner",
@@ -14,46 +14,73 @@ module.exports.config = {
 
 module.exports.run = async function ({ api, event }) {
 
-  
   const info = `
-╔═══════════════✿
-║ ✨ 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 ✨
-╠═══════════════✿
-║ 👑 𝗡𝗮𝗺𝗲 : 𝗥𝗮𝗵𝗮𝘁 𝗜𝘀𝗹𝗮𝗺
-║ 🧸 𝗡𝗶𝗰𝗸 𝗡𝗮𝗺𝗲 : 𝗥𝗮𝗵𝗮𝘁
-║ 🎂 𝗔𝗴𝗲 : 16
+╔══════════════════════✿
+║   ✨ 𝗢𝗪𝗡𝗘𝗥 𝗜𝗡𝗙𝗢 ✨
+╠══════════════════════✿
+║ 👑 𝗡𝗮𝗺𝗲 : Šħẫňto Hřiȡẫy Ħẫššẫň
+║ 🧸 𝗡𝗶𝗰𝗸 𝗡𝗮𝗺𝗲 : হৃদয়
 ║ 💘 𝗥𝗲𝗹𝗮𝘁𝗶𝗼𝗻 : 𝗦𝗶𝗻𝗴𝗹𝗲
-║ 🎓 𝗣𝗿𝗼𝗳𝗲𝘀𝘀𝗶𝗼𝗻 : 𝗦𝘁𝘂𝗱𝗲𝗻𝘁
-║ 🏡 𝗔𝗱𝗱𝗿𝗲𝘀𝘀 : 𝗝𝗮𝗺𝗮𝗹𝗽𝘂𝗿
-╠═══════════════✿
+║ 💻 𝗣𝗿𝗼𝗳𝗲𝘀𝘀𝗶𝗼𝗻 : 𝗝𝗼𝗯
+╠══════════════════════✿
 ║ 🔗 𝗖𝗢𝗡𝗧𝗔𝗖𝗧 𝗟𝗜𝗡𝗞𝗦
-╠═══════════════✿
+╠══════════════════════✿
 ║ 📘 𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 :
-║ fb.com/61582708907708
-║ 💬 𝗠𝗲𝘀𝘀𝗲𝗻𝗴𝗲𝗿 :
-║ m.me/61582708907708
-╚═══════════════✿
+║ https://www.facebook.com/share/19pNyArctH/
+╚══════════════════════✿
+
+        💠 𝗗𝗲𝘃𝗲𝗹𝗼𝗽𝗲𝗿 : Šħẫňto Hřiȡẫy Ħẫššẫň 💠
 `;
 
   const images = [
-    "https://i.imgur.com/G8wZwUB.jpeg",
-    "https://i.imgur.com/942vNzR.jpeg",
-    "https://i.imgur.com/viT3o6b.jpeg",
-    "https://i.imgur.com/btn02Xz.jpeg"
+    "https://i.imgur.com/Q53O1jh.jpeg",
+    "https://i.imgur.com/clFIBRL.jpeg",
+    "https://i.imgur.com/4sDJ6oa.jpeg",
+    "https://i.imgur.com/G8wZwUB.jpeg"
   ];
 
-  const randomImg = images[Math.floor(Math.random() * images.length)];
+  const randomImg =
+    images[Math.floor(Math.random() * images.length)];
 
-  const callback = () => api.sendMessage(
-    {
-      body: info,
-      attachment: fs.createReadStream(__dirname + "/cache/owner.jpg")
-    },
-    event.threadID,
-    () => fs.unlinkSync(__dirname + "/cache/owner.jpg")
-  );
+  const cacheDir = __dirname + "/cache";
+  const imagePath = cacheDir + "/owner.jpg";
 
-  return request(encodeURI(randomImg))
-    .pipe(fs.createWriteStream(__dirname + "/cache/owner.jpg"))
-    .on("close", () => callback());
+  try {
+    await fs.ensureDir(cacheDir);
+
+    const response = request.get(encodeURI(randomImg));
+    const writer = fs.createWriteStream(imagePath);
+
+    response.pipe(writer);
+
+    writer.on("finish", () => {
+      api.sendMessage(
+        {
+          body: info,
+          attachment: fs.createReadStream(imagePath)
+        },
+        event.threadID,
+        () => {
+          fs.unlink(imagePath, () => {});
+        },
+        event.messageID
+      );
+    });
+
+    writer.on("error", (err) => {
+      api.sendMessage(
+        "❌ Owner Photo Download করা যায়নি!\n\n⚠️ Error: " + err.message,
+        event.threadID,
+        event.messageID
+      );
+    });
+
+  } catch (error) {
+    api.sendMessage(
+      "❌ Owner Command চালু করতে সমস্যা হয়েছে!\n\n⚠️ Error: " +
+        error.message,
+      event.threadID,
+      event.messageID
+    );
+  }
 };
