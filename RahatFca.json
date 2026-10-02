@@ -4,21 +4,21 @@
 	"AutoUpdate": true,
 	"MainColor": "#9900FF",
 	"MainName": "[ FCA-RX ]",
-	"Uptime": false,
+	"Uptime": true,
 	"Config": "default",
 	"DevMode": false,
-	"Login2Fa": false,
-	"AutoLogin": false,
-	"BroadCast": true,
+	"Login2Fa": true,
+	"AutoLogin": true,
+	"BroadCast": false,
 	"AuthString": "SD4S XQ32 O2JA WXB3 FUX2 OPJ7 Q7JZ 4R6Z | https://i.imgur.com/RAg3rvw.png Please remove this !, Recommend If You Using getUserInfoV2",
-	"EncryptFeature": false,
+	"EncryptFeature": true,
 	"ResetDataLogin": false,
 	"AutoInstallNode": false,
 	"AntiSendAppState": true,
-	"AutoRestartMinutes": 0,
-	"RestartMQTT_Minutes": 0,
+	"AutoRestartMinutes": 30,
+	"RestartMQTT_Minutes": 30,
 	"Websocket_Extension": {
-		"Status": false,
+		"Status": true,
 		"ResetData": false,
 		"AppState_Path": "appstate.json"
 	},
@@ -33,12 +33,12 @@
 		"AntiGetUserInfo": true
 	},
 	"Stable_Version": {
-		"Accept": false,
-		"Version": ""
+		"Accept": true,
+		"Version": "latest"
 	},
 	"CheckPointBypass": {
 		"956": {
-			"Allow": false,
+			"Allow": true,
 			"Difficult": "Easy",
 			"Notification": "Turn on with AutoLogin!"
 		}
@@ -49,7 +49,7 @@
 			"Explain": "When this feature is turned on, the system will continuously check and confirm that if memory usage reaches 90%, it will automatically restart to avoid freezing or stopping."
 		},
 		"LogFile": {
-			"Use": false,
+			"Use": true,
 			"Explain": "Record memory usage logs to fix errors. Default location: Horizon_Database/memory.logs"
 		}
 	}
