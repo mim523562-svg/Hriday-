@@ -42,7 +42,7 @@ module.exports.handleEvent = async function ({ api, event }) {
         "😄 Haha, এখন না পরে কথা বলি!",
 
       "👍":
-        "🙉👀",
+        "এত বুড়ো আঙ্গুল দেখাও কেন",
 
       "help":
         "Prefix তোমার নানি কালকে দিয়ে যাবে 😊",
@@ -93,7 +93,7 @@ module.exports.handleEvent = async function ({ api, event }) {
         "📸 এখন ছবি শেয়ার করতে পারছি না",
 
       "murgi":
-        "🐔 কাউকে মুরগি দিলে আমি লিভ নিবো 😒",
+        " শান্ত বস বল কাকে চ**** হবে😒",
 
       "heda":
         "😄 OK",
