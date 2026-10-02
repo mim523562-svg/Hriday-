@@ -1,4 +1,4 @@
-Install Autotime.js /**
+/**
  * ╔══════════════════════════════════════════════╗
  * ║              🤖 AUTO SENT BOT               ║
  * ║          💠 HRIDOY HASAN SHANTO 💠          ║
