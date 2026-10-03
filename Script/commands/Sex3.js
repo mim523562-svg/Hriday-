@@ -11,7 +11,7 @@
 const axios = require("axios");
 
 module.exports.config = {
-  name: "hot3",
+  name: "sex3",
   version: "1.0.2",
   hasPermission: 1,
   credits: "💎 হৃদয় হাসান শান্ত",
