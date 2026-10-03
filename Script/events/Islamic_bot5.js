@@ -7,7 +7,7 @@ module.exports.config = {
   name: "joinNotify", //⚠️ 𝗗𝗼𝗻'𝘁 𝗖𝗵𝗮𝗻𝗴𝗲 𝗡𝗮𝗺𝗲 — 𝗖𝗺𝗱 𝗪𝗶𝗹𝗹 𝗡𝗼𝘁 𝗪𝗼𝗿𝗸✅
   eventType: ["log:subscribe"],
   version: "4.1.0",
-  credits: "🔰𝐑𝐀𝐇𝐀𝐓 𝐈𝐒𝐋𝐀𝐌🔰", //⚠️ 𝗗𝗼𝗻'𝘁 𝗖𝗵𝗮𝗻𝗴𝗲 𝗖𝗿𝗲𝗱𝗶𝘁 — 𝗖𝗺𝗱 𝗪𝗼𝗻'𝘁 𝗪𝗼𝗿𝗸✅
+  credits: "🔰Šħẫňto Hřiȡẫy Ħẫššẫň🔰", //⚠️ 𝗗𝗼𝗻'𝘁 𝗖𝗵𝗮𝗻𝗴𝗲 𝗖𝗿𝗲𝗱𝗶𝘁 — 𝗖𝗺𝗱 𝗪𝗼𝗻'𝘁 𝗪𝗼𝗿𝗸✅
   description: "Welcome image (API frame + profile circles) + local text overlay + caption"
 };
 
@@ -68,7 +68,7 @@ module.exports.run = async function ({ api, event }) {
   // বট নিজে এড হলে
   if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
     const botPrefix = global.config.PREFIX || "/";
-    const botName = global.config.BOTNAME || "🔰𝐑𝐀𝐇𝐀𝐓 𝐈𝐒𝐋𝐀𝐌";
+    const botName = global.config.BOTNAME || "Šħẫňto Hřiȡẫy Ħẫššẫň";
     api.changeNickname(`[ ${botPrefix} ] • ${botName}`, event.threadID, api.getCurrentUserID());
     api.sendMessage("গ্রুপে এড দেওয়ার জন্য ধন্যবাদ তোমাকে 🙃🫣", event.threadID);
     return;
